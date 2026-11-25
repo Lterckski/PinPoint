@@ -25,6 +25,9 @@ from pathlib import Path
 
 import httpx
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from api_client import api_client  # noqa: E402
+
 BACKEND = Path(__file__).resolve().parent.parent
 DATA_DIR = BACKEND / "data"
 DEMO = BACKEND / "demo_files"
@@ -107,7 +110,7 @@ def main() -> int:
     args = parser.parse_args()
     api = args.api.rstrip("/")
 
-    with httpx.Client(base_url=api, timeout=120) as client:
+    with api_client(api) as client:
         try:
             health = client.get("/api/health").json()
         except httpx.HTTPError:

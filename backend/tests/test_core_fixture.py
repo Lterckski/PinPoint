@@ -12,6 +12,7 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+os.environ["PINPOINT_AUTH"] = "off"  # these tests cover the API itself; test_auth.py covers sign-in
 os.environ["PINPOINT_DATA_DIR"] = tempfile.mkdtemp(prefix="pinpoint-test-")
 sys.path.insert(0, str(ROOT))
 
@@ -40,7 +41,7 @@ def check(label: str, condition: bool) -> None:
         sys.exit(1)
 
 
-with TestClient(main.app) as client:
+with TestClient(main.app, headers={"X-PinPoint-CSRF": "1"}) as client:
     workspaces = client.get("/api/workspaces").json()
     check("demo workspace seeded", [w["name"] for w in workspaces] == ["Reyes & Partners"])
     check("workspace shape", set(workspaces[0]) == {"id", "name", "industry", "file_count", "updated_at"})
@@ -80,7 +81,7 @@ with TestClient(main.app) as client:
 print("all checks passed")
 
 # Notes: saved, indexed, cited as kind "note" with no crop, and deletable.
-with TestClient(main.app) as client:
+with TestClient(main.app, headers={"X-PinPoint-CSRF": "1"}) as client:
     note = client.post(f"/api/workspaces/{WS}/notes", json={"text": "The client prefers updates by email, not phone calls."}).json()
     check("note shape", set(note) == {"id", "text", "created_at"})
     check("notes listed", [n["id"] for n in client.get(f"/api/workspaces/{WS}/notes").json()] == [note["id"]])
@@ -95,7 +96,7 @@ with TestClient(main.app) as client:
 print("note checks passed")
 
 # History, saved answers, follow-up threads, knowledge stats.
-with TestClient(main.app) as client:
+with TestClient(main.app, headers={"X-PinPoint-CSRF": "1"}) as client:
     first = client.post(f"/api/workspaces/{WS}/ask", json={"question": "Who is counsel for the respondent in the Santos case?"}).json()
     check("ask returns thread_id and history_id", first.get("thread_id") and first.get("history_id"))
     follow = client.post(

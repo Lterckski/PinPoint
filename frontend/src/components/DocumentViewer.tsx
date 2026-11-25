@@ -171,7 +171,7 @@ export function DocumentViewer({ ws, file, onClose }: DocumentViewerProps) {
                     data-page={p.page}
                     className={`flex flex-col gap-3 rounded-card border bg-surface p-6 ${target?.page === p.page ? 'border-accent' : 'border-border'}`}
                   >
-                    <p className="text-eyebrow text-muted uppercase">Page {p.page}</p>
+                    <h2 className="text-label text-muted">Page {p.page}</h2>
                     {p.blocks.map((b, i) => (
                       <div key={i} className={b.locator === target?.locator ? 'rounded-control ring-2 ring-accent' : ''}>
                         <BlockText text={b.text} table={b.table} />
@@ -257,7 +257,7 @@ function AskAboutDocument({ ws, file, onCitation }: { ws: string; file: ViewerFi
   const byId = new Map(result?.citations.map((c) => [c.id, c]) ?? [])
   return (
     <aside aria-label="Ask about this document" className="flex w-[360px] shrink-0 flex-col gap-3 overflow-y-auto border-l border-border bg-surface p-4">
-      <p className="text-eyebrow text-muted uppercase">Ask about this document</p>
+      <h2 className="text-h3 text-text">Ask about this document</h2>
       <SearchInput value={question} onChange={setQuestion} onSubmit={(q) => void ask(q)} busy={busy} placeholder="Ask about this file…" />
       {busy && (
         <p className="flex items-center gap-2 text-small text-muted">
@@ -303,7 +303,7 @@ function AskAboutDocument({ ws, file, onCitation }: { ws: string; file: ViewerFi
       )}
       {result && !busy && result.status === 'not_found' && (
         <div className="flex flex-col gap-2 rounded-control bg-surface-muted p-3">
-          <p className="text-eyebrow text-muted uppercase">Not found in this document</p>
+          <p className="text-small font-medium text-text">Not found in this document</p>
           <p className="text-small text-text">{result.reason}</p>
           {result.suggestion && (
             <button type="button" onClick={() => { setQuestion(result.suggestion!.question); void ask(result.suggestion!.question) }} className="self-start text-left text-small font-medium text-accent hover:text-accent-hover">

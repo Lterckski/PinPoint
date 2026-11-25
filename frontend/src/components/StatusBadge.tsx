@@ -1,19 +1,14 @@
 import type { FileStatus } from '../lib/types'
 
-const STYLES: Record<FileStatus, { label: string; pill: string; dot: string }> = {
-  ready: { label: 'Ready', pill: 'bg-success-soft text-success', dot: 'bg-success' },
-  parsing: { label: 'Reading', pill: 'bg-accent-soft text-accent', dot: 'bg-accent animate-pulse' },
-  queued: { label: 'Queued', pill: 'bg-surface-muted text-muted', dot: 'bg-muted' },
-  failed: { label: 'Failed', pill: 'bg-danger-soft text-danger', dot: 'bg-danger' },
+const STYLES: Record<FileStatus, { label: string; tag: string }> = {
+  ready: { label: 'Ready', tag: 'bg-success-soft text-success' },
+  parsing: { label: 'Reading', tag: 'bg-accent-soft text-accent' },
+  queued: { label: 'Queued', tag: 'border border-border-strong text-muted' },
+  failed: { label: 'Failed', tag: 'bg-danger-soft text-danger' },
 }
 
-// Figma "Status Badge" (3:190): Ready, Parsing, Queued, Failed.
+// Status tag: Ready, Reading, Queued, Failed. The words carry the state; color only confirms it.
 export function StatusBadge({ status, label }: { status: FileStatus; label?: string }) {
   const s = STYLES[status]
-  return (
-    <span className={`inline-flex h-6 shrink-0 items-center gap-1.5 rounded-pill px-2.5 text-label ${s.pill}`}>
-      <span className={`size-1.5 rounded-pill ${s.dot}`} aria-hidden="true" />
-      {label ?? s.label}
-    </span>
-  )
+  return <span className={`inline-flex h-[22px] shrink-0 items-center rounded-sm px-2 text-label ${s.tag}`}>{label ?? s.label}</span>
 }

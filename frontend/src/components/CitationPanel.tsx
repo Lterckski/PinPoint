@@ -73,7 +73,7 @@ export function CitationPanel({ citation, total, onClose, onOpenDocument }: Cita
           <FileText size={14} strokeWidth={1.75} className="shrink-0 text-muted" />
         )}
         <span className="min-w-0 truncate text-small text-text">
-          {citation.kind === 'note' ? 'Note saved in Memory' : `${citation.file_name} · Page ${citation.page}`}
+          {citation.kind === 'note' ? 'Note saved in Memory' : `${citation.file_name}, page ${citation.page}`}
         </span>
       </div>
 
@@ -87,7 +87,7 @@ export function CitationPanel({ citation, total, onClose, onOpenDocument }: Cita
         <CropImage citation={citation} size="panel" />
       </div>
 
-      <p className="text-eyebrow text-subtle uppercase">{citation.kind === 'note' ? 'Note' : 'Relevant passage'}</p>
+      <h3 className="text-label text-muted">{citation.kind === 'note' ? 'Note' : 'Relevant passage'}</h3>
       <p className="font-serif text-doc whitespace-pre-line text-text">
         <mark className="marker">{excerpt}</mark>
       </p>

@@ -35,7 +35,7 @@ export function ConnectedFolders({ folders, onRescan, onDisconnect }: ConnectedF
               ) : (
                 <p className="tabular truncate text-small text-subtle">
                   {folder.file_count} file{folder.file_count === 1 ? '' : 's'}
-                  {folder.last_scanned_at ? ` · Scanned ${timeAgo(folder.last_scanned_at)}` : ' · Scanning for the first time'}
+                  {folder.last_scanned_at ? `, scanned ${timeAgo(folder.last_scanned_at)}` : ', scanning for the first time'}
                 </p>
               )}
             </div>

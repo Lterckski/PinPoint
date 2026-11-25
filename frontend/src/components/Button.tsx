@@ -42,7 +42,7 @@ export function Button({
       type={type}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
-      className={`inline-flex shrink-0 items-center justify-center rounded-control font-medium whitespace-nowrap transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out select-none active:translate-y-px disabled:pointer-events-none disabled:opacity-50 ${SIZES[size]} ${VARIANTS[variant]} ${Icon || loading ? (size === 'sm' ? 'pl-2.5' : 'pl-3') : ''} ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center rounded-control font-medium whitespace-nowrap transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out select-none active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 ${SIZES[size]} ${VARIANTS[variant]} ${Icon || loading ? (size === 'sm' ? 'pl-2.5' : 'pl-3') : ''} ${className}`}
       {...rest}
     >
       {loading ? (

@@ -41,7 +41,7 @@ export function Sidebar({ onNavigate, className = '' }: SidebarProps) {
 
       <nav className="mt-6 flex min-h-0 flex-1 flex-col" aria-labelledby="sidebar-clients">
         <div className="flex items-center justify-between pr-3 pb-1 pl-5">
-          <h2 id="sidebar-clients" className="text-eyebrow text-subtle uppercase">
+          <h2 id="sidebar-clients" className="text-label text-subtle">
             Clients
           </h2>
           <Link

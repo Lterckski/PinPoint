@@ -23,28 +23,25 @@ export function SignInPage() {
   if (status === 'signed-in') return <Navigate to={next} replace />
 
   return (
-    <div className="grid min-h-dvh bg-bg lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
-      <div className="flex flex-col px-5 py-6 sm:px-10">
-        <div className="flex items-center justify-between">
-          <Link to="/" aria-label="PinPoint home" className="rounded-control">
-            <Logo />
-          </Link>
-          <Link to="/" className="inline-flex items-center gap-1.5 rounded-control px-2 py-1 text-small text-muted hover:text-text">
-            <ArrowLeft size={14} strokeWidth={1.75} aria-hidden="true" />
-            Home
-          </Link>
-        </div>
-        <main id="main" className="flex flex-1 items-center justify-center py-10">
-          <div className="animate-rise-in w-full max-w-[380px]">
-            {status === 'setup' ? <SetupForm onSubmit={setup} /> : <SignInForm onSubmit={signIn} />}
-          </div>
-        </main>
-        <p className="flex items-center justify-center gap-1.5 text-label text-subtle">
-          <LockKeyhole size={12} strokeWidth={1.75} aria-hidden="true" />
-          Your files stay on this computer.
-        </p>
+    <div className="flex min-h-dvh flex-col bg-bg px-4 py-5 sm:px-8">
+      <div className="flex items-center justify-between">
+        <Link to="/" aria-label="PinPoint home" className="rounded-control">
+          <Logo size={24} />
+        </Link>
+        <Link to="/" className="inline-flex items-center gap-1.5 rounded-control px-2 py-1 text-small text-muted hover:text-text">
+          <ArrowLeft size={14} strokeWidth={1.75} aria-hidden="true" />
+          Home
+        </Link>
       </div>
-      <BrandPanel />
+      <main id="main" className="flex flex-1 items-center justify-center py-10">
+        <div className="animate-rise-in w-full max-w-[400px] rounded-card border border-border bg-surface p-6 sm:p-8">
+          {status === 'setup' ? <SetupForm onSubmit={setup} /> : <SignInForm onSubmit={signIn} />}
+        </div>
+      </main>
+      <p className="flex items-center justify-center gap-1.5 text-label text-subtle">
+        <LockKeyhole size={12} strokeWidth={1.75} aria-hidden="true" />
+        Your files are stored on this computer.
+      </p>
     </div>
   )
 }
@@ -84,8 +81,8 @@ function SignInForm({ onSubmit }: { onSubmit: (email: string, password: string) 
   return (
     <form onSubmit={submit} noValidate className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <h1 className="font-serif text-[36px] leading-[1.1] tracking-[-0.015em] text-text">Welcome back</h1>
-        <p className="text-body text-muted">Sign in to your workspaces.</p>
+        <h1 className="text-h1 text-text">Sign in to PinPoint</h1>
+        <p className="text-body text-muted">Use the account set up on this computer.</p>
       </div>
       {USE_MOCKS && (
         <p className="rounded-control border border-accent-border bg-accent-soft px-3 py-2 text-small text-accent">
@@ -104,8 +101,7 @@ function SignInForm({ onSubmit }: { onSubmit: (email: string, password: string) 
           spellCheck={false}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@firm.ph"
-          maxLength={254}
+                    maxLength={254}
           required
         />
         <PasswordField
@@ -177,10 +173,9 @@ function SetupForm({ onSubmit }: { onSubmit: (name: string, email: string, passw
   return (
     <form onSubmit={submit} noValidate className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <p className="text-eyebrow text-accent uppercase">First-time setup</p>
-        <h1 className="font-serif text-[36px] leading-[1.1] tracking-[-0.015em] text-text">Set up PinPoint</h1>
+        <h1 className="text-h1 text-text">Set up PinPoint</h1>
         <p className="text-body text-muted">
-          Create the owner account for this computer. You'll use it to sign in from now on.
+          This is the first time PinPoint has run here. Create the owner account; you'll use it to sign in from now on.
         </p>
       </div>
       <div className="flex flex-col gap-4">
@@ -240,28 +235,5 @@ function SetupForm({ onSubmit }: { onSubmit: (name: string, email: string, passw
         {busy ? 'Creating account…' : 'Create account'}
       </Button>
     </form>
-  )
-}
-
-/** The right half on large screens: the product's promise, shown as a cited passage. */
-function BrandPanel() {
-  return (
-    <aside aria-hidden="true" className="relative hidden overflow-hidden border-l border-border bg-surface-muted lg:flex lg:items-center lg:justify-center">
-      <div className="absolute inset-0 opacity-70 [background-image:repeating-linear-gradient(to_bottom,transparent_0,transparent_31px,var(--border)_31px,var(--border)_32px)]" />
-      <div className="absolute inset-y-0 left-16 w-px bg-danger/25" />
-      <div className="relative flex max-w-md flex-col gap-6 px-10">
-        <p className="font-serif text-[34px] leading-[1.15] tracking-[-0.01em] text-text">
-          &ldquo;The response is due on <span className="marker">March 14, 2026</span>.&rdquo;
-        </p>
-        <div className="flex items-center gap-3 rounded-card border border-border bg-surface p-3 shadow-card">
-          <span className="flex size-7 shrink-0 items-center justify-center rounded-pill bg-accent text-label font-semibold text-on-accent">1</span>
-          <div className="min-w-0">
-            <p className="truncate text-small font-medium text-text">Santos_Motion.pdf</p>
-            <p className="text-label text-subtle">Page 3 · Court order, paragraph 2</p>
-          </div>
-        </div>
-        <p className="text-body text-muted">Every answer comes with the exact passage it came from.</p>
-      </div>
-    </aside>
   )
 }

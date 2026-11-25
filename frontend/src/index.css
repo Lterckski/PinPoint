@@ -1,95 +1,96 @@
 @import 'tailwindcss';
 
 /*
- * PinPoint design system ("Margin Notes"). docs/DESIGN.md explains every token.
+ * PinPoint design system ("Chambers"). docs/DESIGN.md explains every token.
  *
  * Two tiers:
- *   1. Primitives: ramps named by hue (--paper-*, --ink-*, --indigo-*, ...). Never used in components.
+ *   1. Primitives: ramps named by material (--slate-*, --navy-*, --marker-*, ...). Never used in components.
  *   2. Semantic tokens: roles (--background, --surface1, --text2, --accent, ...). Components use
  *      only these, through the Tailwind utilities mapped in @theme below.
  *
- * Ramps were generated in OKLCH (constant hue per ramp) and written as hex, the project's
- * notation. Every text/background pair below was measured: body text >= 4.5:1, input borders
- * and focus rings >= 3:1, in both themes.
+ * Ramps were generated in OKLCH (slate hue 258 at chroma <= 0.018, navy hue 262) and written as
+ * hex. Every text/background pair below was measured: body text >= 5:1, input borders >= 3.3:1,
+ * in both themes.
  *
  * Dark mode is the .dark class on <html> (set before first paint in index.html).
  */
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* Primitives: warm paper neutrals (OKLCH hue 80, chroma <= 0.008) */
-  --paper-0: #ffffff;
-  --paper-50: #fbf9f7;
-  --paper-100: #f5f3f0;
-  --paper-150: #efece8;
-  --paper-200: #e4e1dd;
-  --paper-300: #d0cdc8;
-  --paper-500: #96938c;
+  /* Slate neutrals, light end (paper, rules) */
+  --slate-0: #ffffff;
+  --slate-25: #fafafc;
+  --slate-50: #f4f5f7;
+  --slate-75: #edeef1;
+  --slate-100: #e1e3e6;
+  --slate-200: #cbced2;
+  --slate-400: #7f8389;
+  --slate-450: #a1a5ab;
+  --slate-500: #60656d;
+  --slate-600: #4a5059;
+  --slate-900: #131921;
 
-  /* Ink neutrals (OKLCH hue 275, a hint of the brand indigo) */
-  --ink-50: #edeef1;
-  --ink-200: #afb1b8;
-  --ink-300: #93959d;
-  --ink-400: #a3a4aa;
-  --ink-500: #6a6b72;
-  --ink-600: #5b5d65;
-  --ink-650: #616369;
-  --ink-700: #3e3f46;
-  --ink-750: #2a2b30;
-  --ink-800: #24252a;
-  --ink-850: #1d1e22;
-  --ink-900: #191a20;
-  --ink-925: #151619;
-  --ink-950: #0d0e11;
+  /* Slate neutrals, dark end (graphite) */
+  --graphite-50: #e9ebee;
+  --graphite-200: #b0b4bb;
+  --graphite-300: #9da2a9;
+  --graphite-500: #6d7279;
+  --graphite-600: #595e65;
+  --graphite-700: #3a3d42;
+  --graphite-750: #2b2e32;
+  --graphite-800: #23252a;
+  --graphite-850: #1c1e22;
+  --graphite-900: #15171a;
+  --graphite-950: #0f1113;
 
-  /* Indigo, from the logo (OKLCH hue 277) */
-  --indigo-50: #eef1ff;
-  --indigo-200: #bec7f9;
-  --indigo-300: #adb8fe;
-  --indigo-400: #96a2fc;
-  --indigo-600: #4840d2;
-  --indigo-700: #3b30b6;
-  --indigo-800: #404683;
-  --indigo-900: #222546;
-  --indigo-950: #0c0e1c;
+  /* Navy: the one action color */
+  --navy-50: #ecf2fd;
+  --navy-200: #c3d2ec;
+  --navy-300: #a8c5f9;
+  --navy-400: #90b1ee;
+  --navy-700: #234485;
+  --navy-800: #153470;
+  --navy-850: #2d4268;
+  --navy-900: #192437;
+  --navy-950: #0b0f18;
 
-  /* Highlighter (OKLCH hue 90-95): citations only */
-  --marker-200: #fee484;
-  --marker-300: #f4c947;
-  --marker-800: #5e4b0c;
-  --marker-700: #8a6e08;
+  /* Highlighter: cited passages only */
+  --marker-200: #fae492;
+  --marker-300: #f1c955;
+  --marker-700: #77601b;
+  --marker-800: #554614;
 
   /* Status */
   --green-50: #e6fae9;
-  --green-300: #6fd087;
-  --green-700: #1d7d3e;
-  --green-900: #172c1c;
-  --amber-50: #fff3e2;
-  --amber-300: #eeb154;
-  --amber-700: #a35e16;
-  --amber-900: #362512;
-  --red-50: #fdeeed;
-  --red-300: #f47b74;
-  --red-700: #be2323;
-  --red-900: #3e1e1c;
+  --green-300: #76c788;
+  --green-700: #206b38;
+  --green-900: #132416;
+  --amber-50: #fff1de;
+  --amber-300: #e4b066;
+  --amber-700: #90570c;
+  --amber-900: #2c1f0e;
+  --red-50: #ffefed;
+  --red-300: #eb827b;
+  --red-700: #b02b27;
+  --red-900: #341816;
 
   /* Semantic tokens: light */
-  --background: var(--paper-50);
-  --surface1: var(--paper-0);
-  --surface2: var(--paper-100);
-  --surface3: var(--paper-150);
-  --border: var(--paper-200);
-  --border-visible: var(--paper-300);
-  --border-input: var(--paper-500);
-  --text1: var(--ink-900);
-  --text2: var(--ink-600);
-  --text3: var(--ink-500);
-  --text4: var(--ink-400);
-  --accent: var(--indigo-600);
-  --accent-hover: var(--indigo-700);
-  --accent-subtle: var(--indigo-50);
-  --accent-border: var(--indigo-200);
-  --on-accent: var(--paper-0);
+  --background: var(--slate-25);
+  --surface1: var(--slate-0);
+  --surface2: var(--slate-50);
+  --surface3: var(--slate-75);
+  --border: var(--slate-100);
+  --border-visible: var(--slate-200);
+  --border-input: var(--slate-400);
+  --text1: var(--slate-900);
+  --text2: var(--slate-600);
+  --text3: var(--slate-500);
+  --text4: var(--slate-450);
+  --accent: var(--navy-700);
+  --accent-hover: var(--navy-800);
+  --accent-subtle: var(--navy-50);
+  --accent-border: var(--navy-200);
+  --on-accent: var(--slate-0);
   --highlight: var(--marker-200);
   --highlight-strong: var(--marker-300);
   --success: var(--green-700);
@@ -98,41 +99,45 @@
   --warning-bg: var(--amber-50);
   --error: var(--red-700);
   --error-bg: var(--red-50);
-  --scrim: rgb(25 26 32 / 0.4);
-  --shadow-color: 24 20 16;
+  --band: var(--slate-900);
+  --on-band: var(--graphite-50);
+  --on-band-muted: var(--graphite-200);
+  --band-border: var(--graphite-750);
+  --scrim: rgb(19 25 33 / 0.36);
+  --shadow-color: 19 25 33;
   --shadow-strength: 1;
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
   --radius-full: 999px;
 
-  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --duration-fast: 120ms;
-  --duration-base: 180ms;
-  --duration-slow: 260ms;
+  --duration-base: 160ms;
+  --duration-slow: 220ms;
 
   color-scheme: light;
 }
 
 .dark {
-  --background: var(--ink-950);
-  --surface1: var(--ink-925);
-  --surface2: var(--ink-850);
-  --surface3: var(--ink-800);
-  --border: var(--ink-750);
-  --border-visible: var(--ink-700);
-  --border-input: var(--ink-650);
-  --text1: var(--ink-50);
-  --text2: var(--ink-200);
-  --text3: var(--ink-300);
-  --text4: var(--ink-650);
-  --accent: var(--indigo-400);
-  --accent-hover: var(--indigo-300);
-  --accent-subtle: var(--indigo-900);
-  --accent-border: var(--indigo-800);
-  --on-accent: var(--indigo-950);
+  --background: var(--graphite-950);
+  --surface1: var(--graphite-900);
+  --surface2: var(--graphite-850);
+  --surface3: var(--graphite-800);
+  --border: var(--graphite-750);
+  --border-visible: var(--graphite-700);
+  --border-input: var(--graphite-500);
+  --text1: var(--graphite-50);
+  --text2: var(--graphite-200);
+  --text3: var(--graphite-300);
+  --text4: var(--graphite-600);
+  --accent: var(--navy-400);
+  --accent-hover: var(--navy-300);
+  --accent-subtle: var(--navy-900);
+  --accent-border: var(--navy-850);
+  --on-accent: var(--navy-950);
   --highlight: var(--marker-800);
   --highlight-strong: var(--marker-700);
   --success: var(--green-300);
@@ -141,6 +146,10 @@
   --warning-bg: var(--amber-900);
   --error: var(--red-300);
   --error-bg: var(--red-900);
+  --band: var(--graphite-850);
+  --on-band: var(--graphite-50);
+  --on-band-muted: var(--graphite-200);
+  --band-border: var(--graphite-700);
   --scrim: rgb(0 0 0 / 0.6);
   --shadow-color: 0 0 0;
   /* Dark surfaces separate by lightness and borders; shadows only for floating layers. */
@@ -178,39 +187,46 @@
   --color-danger: var(--error);
   --color-danger-soft: var(--error-bg);
   --color-scrim: var(--scrim);
+  /* The one inverted band on the landing page (privacy). */
+  --color-band: var(--band);
+  --color-on-band: var(--on-band);
+  --color-on-band-muted: var(--on-band-muted);
+  --color-band-border: var(--band-border);
 
   --radius-control: var(--radius-sm);
   --radius-card: var(--radius-md);
   --radius-panel: var(--radius-lg);
   --radius-pill: var(--radius-full);
 
-  /* Elevation: "subtle" strategy. Layered, low-opacity, warm-tinted; zero in dark mode. */
-  --shadow-subtle: 0 1px 2px rgb(var(--shadow-color) / calc(0.05 * var(--shadow-strength)));
-  --shadow-card:
-    0 1px 2px rgb(var(--shadow-color) / calc(0.04 * var(--shadow-strength))),
-    0 4px 12px -2px rgb(var(--shadow-color) / calc(0.06 * var(--shadow-strength)));
+  /* Elevation: flat. Borders separate surfaces at rest; only floating layers (menus, dialogs,
+     the citation panel) cast a shadow. */
+  --shadow-subtle: 0 0 #0000;
+  --shadow-card: 0 1px 2px rgb(var(--shadow-color) / calc(0.05 * var(--shadow-strength)));
   --shadow-panel:
-    0 2px 6px rgb(var(--shadow-color) / 0.06), 0 16px 40px -8px rgb(var(--shadow-color) / 0.16);
+    0 1px 3px rgb(var(--shadow-color) / 0.08), 0 12px 32px -8px rgb(var(--shadow-color) / 0.18);
 
   --ease-out: var(--ease-out);
   --ease-in-out: var(--ease-in-out);
 
-  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-serif: 'Instrument Serif', ui-serif, Georgia, 'Times New Roman', serif;
-  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Document text only (quoted passages, notes): the client's words, not the interface's. */
+  --font-serif: 'IBM Plex Serif', ui-serif, Georgia, 'Times New Roman', serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 }
 
-/* Type scale (docs/DESIGN.md, "Type"). */
+/* Type scale (docs/DESIGN.md, "Type"). One family; weight and color carry the hierarchy. */
 @theme {
-  --text-display: 64px;
-  --text-display--line-height: 1;
-  --text-display--letter-spacing: -0.02em;
-  --text-section: 40px;
-  --text-section--line-height: 1.1;
-  --text-section--letter-spacing: -0.015em;
-  --text-h1: 24px;
+  --text-display: 52px;
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.032em;
+  --text-display--font-weight: 600;
+  --text-section: 34px;
+  --text-section--line-height: 1.12;
+  --text-section--letter-spacing: -0.025em;
+  --text-section--font-weight: 600;
+  --text-h1: 26px;
   --text-h1--line-height: 32px;
-  --text-h1--letter-spacing: -0.015em;
+  --text-h1--letter-spacing: -0.02em;
   --text-h1--font-weight: 600;
   --text-h2: 18px;
   --text-h2--line-height: 26px;
@@ -218,9 +234,8 @@
   --text-h2--font-weight: 600;
   --text-h3: 15px;
   --text-h3--line-height: 22px;
-  --text-h3--letter-spacing: -0.005em;
   --text-h3--font-weight: 600;
-  --text-lead: 17px;
+  --text-lead: 18px;
   --text-lead--line-height: 28px;
   --text-answer: 16px;
   --text-answer--line-height: 26px;
@@ -231,17 +246,18 @@
   --text-label: 12px;
   --text-label--line-height: 16px;
   --text-label--font-weight: 500;
-  --text-eyebrow: 11px;
-  --text-eyebrow--line-height: 16px;
-  --text-eyebrow--letter-spacing: 0.08em;
-  --text-eyebrow--font-weight: 600;
-  --text-doc: 16px;
-  --text-doc--line-height: 24px;
+  --text-doc: 15px;
+  --text-doc--line-height: 25px;
 
   --breakpoint-xs: 30rem;
 }
 
 @layer base {
+  html,
+  body {
+    overflow-x: clip;
+  }
+
   html {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
@@ -256,7 +272,6 @@
     line-height: 22px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-feature-settings: 'cv11', 'ss01';
     text-rendering: optimizeLegibility;
   }
 
@@ -380,21 +395,24 @@
   animation: pp-shimmer 1.6s linear infinite;
 }
 
-/* The signature detail: a highlighter stroke, slightly irregular like a real marker. */
+/* Cited text: a flat highlighter band, the way a reviewer marks an exhibit. */
 .marker {
-  background: linear-gradient(
-    100deg,
-    transparent 0.15em,
-    var(--highlight) 0.2em,
-    var(--highlight) calc(100% - 0.2em),
-    transparent calc(100% - 0.15em)
-  );
-  border-radius: 0.2em 0.35em 0.25em 0.3em;
+  background: var(--highlight);
+  border-radius: 2px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-  padding: 0.05em 0.18em;
-  margin: 0 -0.06em;
+  padding: 0.04em 0.12em;
   color: var(--text1);
+}
+
+/* Press feedback: buttons acknowledge the click (transform only). */
+.press {
+  transition-property: transform, background-color, border-color, color;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-out);
+}
+.press:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 /* Overlays keep their scroll to themselves. */

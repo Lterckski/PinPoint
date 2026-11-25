@@ -46,7 +46,7 @@ export function AnswerCard({ response, activeCitationId, onOpenCitation, onFollo
           <span className="flex size-5 items-center justify-center rounded-pill bg-success-soft">
             <Check size={12} strokeWidth={2.5} className="text-success" aria-hidden="true" />
           </span>
-          <span className="text-eyebrow uppercase">{extractive ? 'Matching passages' : 'Answer'}</span>
+          <span className="text-label text-muted">{extractive ? 'Matching passages' : 'Answer'}</span>
         </div>
         <span className="tabular text-label text-subtle">
           {fileCount === 0
@@ -116,7 +116,7 @@ export function AnswerCard({ response, activeCitationId, onOpenCitation, onFollo
       </div>
 
       <div className="flex flex-col gap-3 border-t border-border pt-4">
-      <p className="text-eyebrow text-subtle uppercase">Sources</p>
+      <h3 className="text-label text-muted">Sources</h3>
       <div className="grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
         {response.citations.map((c) => (
           <CitationCard

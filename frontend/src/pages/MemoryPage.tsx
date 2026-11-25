@@ -177,7 +177,7 @@ function HistorySections({ ws }: { ws: string }) {
         ) : (
           [...byDay.entries()].map(([day, list]) => (
             <div key={day} className="flex flex-col gap-2">
-              <p className="text-eyebrow text-subtle uppercase">{day}</p>
+              <h3 className="text-label text-muted">{day}</h3>
               <HistoryList ws={ws} items={list} />
             </div>
           ))

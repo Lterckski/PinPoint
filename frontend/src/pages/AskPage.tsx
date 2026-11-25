@@ -1,4 +1,4 @@
-import { Clock, CornerDownRight, FileUp, Loader2, MessageSquareText, Plus, Search, Sparkle, Upload } from 'lucide-react'
+import { Clock, CornerDownRight, FileUp, Loader2, MessageSquareText, Plus, Search, Upload } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { AnswerCard } from '../components/AnswerCard'
@@ -165,7 +165,7 @@ export function AskPage() {
             </EmptyState>
           ) : (
             <div className="animate-fade-in flex flex-col items-start gap-2 pt-2 pb-1">
-              <h2 className="font-serif text-[30px] leading-[1.15] tracking-[-0.01em] text-text sm:text-[34px]">
+              <h2 className="text-h1 text-text sm:text-[30px] sm:leading-[36px]">
                 What do you need to find?
               </h2>
               <p className="text-body text-muted">
@@ -348,7 +348,7 @@ function NotFoundCard({
 }: NotFoundCardProps) {
   return (
     <div className="animate-rise-in flex flex-col gap-3 rounded-panel border border-border bg-surface px-5 py-5 shadow-subtle sm:px-6">
-      <p className="flex items-center gap-2 text-eyebrow text-subtle uppercase">
+      <p className="flex items-center gap-2 text-small font-medium text-muted">
         <Search size={14} strokeWidth={1.75} aria-hidden="true" />
         Not found in these files
       </p>
@@ -362,13 +362,13 @@ function NotFoundCard({
           title={suggestion.question}
           className="flex items-center gap-2 self-start rounded-control border border-accent-border bg-accent-soft px-3.5 py-2 text-left text-body font-medium text-accent transition-colors hover:bg-accent hover:text-on-accent"
         >
-          <Sparkle size={16} strokeWidth={1.75} className="shrink-0" aria-hidden="true" />
+          <CornerDownRight size={16} strokeWidth={1.75} className="shrink-0" aria-hidden="true" />
           {suggestion.text}
         </button>
       )}
       {nearMatches.length > 0 && (
         <div className="flex flex-col gap-2 pt-1">
-          <p className="text-eyebrow text-subtle uppercase">Closest passages</p>
+          <h3 className="text-label text-muted">Closest passages</h3>
           <div className="flex flex-wrap gap-3">
             {nearMatches.map((c) => (
               <CitationCard key={c.id} citation={c} onOpen={onOpenMatch} />

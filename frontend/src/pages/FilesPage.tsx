@@ -241,7 +241,7 @@ export function FilesPage() {
               )}
             </p>
           )}
-          <p className="text-small text-subtle">Scans, photos, PDF, Word, Excel, PowerPoint, CSV and text · up to 50 MB each</p>
+          <p className="text-small text-subtle">Scans, photos, PDF, Word, Excel, PowerPoint, CSV and text, up to 50 MB each</p>
         </div>
       </div>
 
@@ -374,20 +374,26 @@ function MenuItem({ Icon, label, onClick }: { Icon: typeof FileUp; label: string
   )
 }
 
-/** "6 files · 41 pages · 312 passages indexed · 2 notes · Updated 2 min ago" (GET /knowledge). */
+/** The workspace's index at a glance, as a row of figures (GET /knowledge). */
 function KnowledgeStrip({ stats }: { stats: KnowledgeStats }) {
-  const plural = (n: number, word: string) => `${n.toLocaleString()} ${word}${n === 1 ? '' : 's'}`
-  const parts = [
-    plural(stats.files, 'file'),
-    plural(stats.pages, 'page'),
-    `${plural(stats.passages, 'passage')} indexed`,
-    plural(stats.notes, 'note'),
+  const figures: [number, string][] = [
+    [stats.files, stats.files === 1 ? 'File' : 'Files'],
+    [stats.pages, stats.pages === 1 ? 'Page' : 'Pages'],
+    [stats.passages, 'Passages indexed'],
+    [stats.notes, stats.notes === 1 ? 'Note' : 'Notes'],
   ]
-  if (stats.folders > 0) parts.push(plural(stats.folders, 'connected folder'))
-  if (stats.last_indexed_at) parts.push(`Updated ${timeAgo(stats.last_indexed_at)}`)
+  if (stats.folders > 0) figures.push([stats.folders, stats.folders === 1 ? 'Connected folder' : 'Connected folders'])
   return (
-    <p className="tabular -mt-2 text-small text-subtle" aria-label="Knowledge stats">
-      {parts.join(' · ')}
-    </p>
+    <div className="flex flex-col gap-2">
+      <dl className="grid grid-cols-2 overflow-hidden rounded-card border border-border bg-surface sm:flex" aria-label="Knowledge stats">
+        {figures.map(([n, label]) => (
+          <div key={label} className="flex flex-1 flex-col gap-0.5 border-border px-4 py-3 sm:not-last:border-r max-sm:odd:border-r max-sm:[&:nth-child(n+3)]:border-t">
+            <dt className="order-2 text-label text-subtle">{label}</dt>
+            <dd className="tabular order-1 text-h2 text-text">{n.toLocaleString()}</dd>
+          </div>
+        ))}
+      </dl>
+      {stats.last_indexed_at && <p className="text-small text-subtle">Index updated {timeAgo(stats.last_indexed_at)}</p>}
+    </div>
   )
 }

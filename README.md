@@ -95,7 +95,7 @@ Claude Haiku writes the answer from the matching passages. PinPoint attaches a c
 
 | Layer | Technology |
 |---|---|
-| *Frontend* | React 19, TypeScript, Vite, Tailwind CSS 4, React Router, Lucide icons. Fonts (Inter, Instrument Serif) are bundled locally, so the app loads nothing from the internet. |
+| *Frontend* | React 19, TypeScript, Vite, Tailwind CSS 4, React Router, Lucide icons. Fonts (IBM Plex Sans, Serif and Mono) are bundled locally, so the app loads nothing from the internet. |
 | *Backend* | Python 3.12 with FastAPI and Uvicorn |
 | *Document parsing* | [MinerU](https://github.com/opendatalab/MinerU) 4, an open-source parser that runs locally on the laptop (OCR, layout, and table extraction) |
 | *Search* | Hybrid search: BM25 keyword search (rank_bm25) combined with embedding search from the organizers' embedding server |

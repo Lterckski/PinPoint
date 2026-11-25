@@ -1,58 +1,50 @@
 @import 'tailwindcss';
 
 /*
- * PinPoint design system ("Chambers"). docs/DESIGN.md explains every token.
+ * PinPoint design system ("Quiet"). docs/DESIGN.md explains every token.
  *
  * Two tiers:
- *   1. Primitives: ramps named by material (--slate-*, --navy-*, --marker-*, ...). Never used in components.
+ *   1. Primitives: neutral ramps (--gray-*, --night-*), the marker and status hues. Never used in components.
  *   2. Semantic tokens: roles (--background, --surface1, --text2, --accent, ...). Components use
  *      only these, through the Tailwind utilities mapped in @theme below.
  *
- * Ramps were generated in OKLCH (slate hue 258 at chroma <= 0.018, navy hue 262) and written as
- * hex. Every text/background pair below was measured: body text >= 5:1, input borders >= 3.3:1,
- * in both themes.
+ * Monochrome on purpose: ink-black actions on white paper, so the only color on screen is the
+ * yellow mark on a cited passage and the occasional status. Every text/background pair below was
+ * measured: body text >= 4.7:1, input borders >= 3.2:1, in both themes.
  *
  * Dark mode is the .dark class on <html> (set before first paint in index.html).
  */
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* Slate neutrals, light end (paper, rules) */
-  --slate-0: #ffffff;
-  --slate-25: #fafafc;
-  --slate-50: #f4f5f7;
-  --slate-75: #edeef1;
-  --slate-100: #e1e3e6;
-  --slate-200: #cbced2;
-  --slate-400: #7f8389;
-  --slate-450: #a1a5ab;
-  --slate-500: #60656d;
-  --slate-600: #4a5059;
-  --slate-900: #131921;
+  /* Neutrals, light end (a hint of cool, chroma < 0.004) */
+  --gray-0: #ffffff;
+  --gray-25: #fafafa;
+  --gray-50: #f4f4f5;
+  --gray-75: #ededef;
+  --gray-90: #f1f1f3;
+  --gray-100: #e8e8eb;
+  --gray-200: #d9d9dd;
+  --gray-400: #8b8b92;
+  --gray-450: #a8a8ae;
+  --gray-500: #67676f;
+  --gray-600: #52525a;
+  --gray-800: #2c2c30;
+  --gray-900: #111113;
 
-  /* Slate neutrals, dark end (graphite) */
-  --graphite-50: #e9ebee;
-  --graphite-200: #b0b4bb;
-  --graphite-300: #9da2a9;
-  --graphite-500: #6d7279;
-  --graphite-600: #595e65;
-  --graphite-700: #3a3d42;
-  --graphite-750: #2b2e32;
-  --graphite-800: #23252a;
-  --graphite-850: #1c1e22;
-  --graphite-900: #15171a;
-  --graphite-950: #0f1113;
-
-  /* Navy: the one action color */
-  --navy-50: #ecf2fd;
-  --navy-200: #c3d2ec;
-  --navy-300: #a8c5f9;
-  --navy-400: #90b1ee;
-  --navy-700: #234485;
-  --navy-800: #153470;
-  --navy-850: #2d4268;
-  --navy-900: #192437;
-  --navy-950: #0b0f18;
+  /* Neutrals, dark end */
+  --night-50: #ededef;
+  --night-200: #a8a8af;
+  --night-300: #909098;
+  --night-500: #6b6b72;
+  --night-600: #4f4f55;
+  --night-700: #333337;
+  --night-750: #26262a;
+  --night-800: #212124;
+  --night-850: #1a1a1d;
+  --night-875: #222225;
+  --night-900: #141416;
+  --night-950: #0c0c0d;
 
   /* Highlighter: cited passages only */
   --marker-200: #fae492;
@@ -61,36 +53,36 @@
   --marker-800: #554614;
 
   /* Status */
-  --green-50: #e6fae9;
+  --green-50: #e9f8ec;
   --green-300: #76c788;
   --green-700: #206b38;
   --green-900: #132416;
-  --amber-50: #fff1de;
+  --amber-50: #fff3e3;
   --amber-300: #e4b066;
   --amber-700: #90570c;
   --amber-900: #2c1f0e;
-  --red-50: #ffefed;
+  --red-50: #fff0ee;
   --red-300: #eb827b;
   --red-700: #b02b27;
   --red-900: #341816;
 
   /* Semantic tokens: light */
-  --background: var(--slate-25);
-  --surface1: var(--slate-0);
-  --surface2: var(--slate-50);
-  --surface3: var(--slate-75);
-  --border: var(--slate-100);
-  --border-visible: var(--slate-200);
-  --border-input: var(--slate-400);
-  --text1: var(--slate-900);
-  --text2: var(--slate-600);
-  --text3: var(--slate-500);
-  --text4: var(--slate-450);
-  --accent: var(--navy-700);
-  --accent-hover: var(--navy-800);
-  --accent-subtle: var(--navy-50);
-  --accent-border: var(--navy-200);
-  --on-accent: var(--slate-0);
+  --background: var(--gray-25);
+  --surface1: var(--gray-0);
+  --surface2: var(--gray-50);
+  --surface3: var(--gray-75);
+  --border: var(--gray-100);
+  --border-visible: var(--gray-200);
+  --border-input: var(--gray-400);
+  --text1: var(--gray-900);
+  --text2: var(--gray-600);
+  --text3: var(--gray-500);
+  --text4: var(--gray-450);
+  --accent: var(--gray-900);
+  --accent-hover: var(--gray-800);
+  --accent-subtle: var(--gray-90);
+  --accent-border: var(--gray-200);
+  --on-accent: var(--gray-0);
   --highlight: var(--marker-200);
   --highlight-strong: var(--marker-300);
   --success: var(--green-700);
@@ -99,45 +91,45 @@
   --warning-bg: var(--amber-50);
   --error: var(--red-700);
   --error-bg: var(--red-50);
-  --band: var(--slate-900);
-  --on-band: var(--graphite-50);
-  --on-band-muted: var(--graphite-200);
-  --band-border: var(--graphite-750);
-  --scrim: rgb(19 25 33 / 0.36);
-  --shadow-color: 19 25 33;
+  --band: var(--gray-50);
+  --on-band: var(--gray-900);
+  --on-band-muted: var(--gray-600);
+  --band-border: var(--gray-200);
+  --scrim: rgb(17 17 19 / 0.32);
+  --shadow-color: 17 17 19;
   --shadow-strength: 1;
 
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
   --radius-full: 999px;
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --duration-fast: 120ms;
-  --duration-base: 160ms;
-  --duration-slow: 220ms;
+  --duration-fast: 140ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
 
   color-scheme: light;
 }
 
 .dark {
-  --background: var(--graphite-950);
-  --surface1: var(--graphite-900);
-  --surface2: var(--graphite-850);
-  --surface3: var(--graphite-800);
-  --border: var(--graphite-750);
-  --border-visible: var(--graphite-700);
-  --border-input: var(--graphite-500);
-  --text1: var(--graphite-50);
-  --text2: var(--graphite-200);
-  --text3: var(--graphite-300);
-  --text4: var(--graphite-600);
-  --accent: var(--navy-400);
-  --accent-hover: var(--navy-300);
-  --accent-subtle: var(--navy-900);
-  --accent-border: var(--navy-850);
-  --on-accent: var(--navy-950);
+  --background: var(--night-950);
+  --surface1: var(--night-900);
+  --surface2: var(--night-850);
+  --surface3: var(--night-800);
+  --border: var(--night-750);
+  --border-visible: var(--night-700);
+  --border-input: var(--night-500);
+  --text1: var(--night-50);
+  --text2: var(--night-200);
+  --text3: var(--night-300);
+  --text4: var(--night-600);
+  --accent: var(--night-50);
+  --accent-hover: var(--gray-0);
+  --accent-subtle: var(--night-875);
+  --accent-border: var(--night-700);
+  --on-accent: var(--gray-900);
   --highlight: var(--marker-800);
   --highlight-strong: var(--marker-700);
   --success: var(--green-300);
@@ -146,10 +138,10 @@
   --warning-bg: var(--amber-900);
   --error: var(--red-300);
   --error-bg: var(--red-900);
-  --band: var(--graphite-850);
-  --on-band: var(--graphite-50);
-  --on-band-muted: var(--graphite-200);
-  --band-border: var(--graphite-700);
+  --band: var(--night-850);
+  --on-band: var(--night-50);
+  --on-band-muted: var(--night-200);
+  --band-border: var(--night-700);
   --scrim: rgb(0 0 0 / 0.6);
   --shadow-color: 0 0 0;
   /* Dark surfaces separate by lightness and borders; shadows only for floating layers. */
@@ -198,35 +190,37 @@
   --radius-panel: var(--radius-lg);
   --radius-pill: var(--radius-full);
 
-  /* Elevation: flat. Borders separate surfaces at rest; only floating layers (menus, dialogs,
-     the citation panel) cast a shadow. */
-  --shadow-subtle: 0 0 #0000;
-  --shadow-card: 0 1px 2px rgb(var(--shadow-color) / calc(0.05 * var(--shadow-strength)));
+  /* Elevation: soft. Resting cards get a whisper of shadow; floating layers a real one.
+     Dark mode drops resting shadows and relies on lightness and borders. */
+  --shadow-subtle: 0 1px 2px rgb(var(--shadow-color) / calc(0.04 * var(--shadow-strength)));
+  --shadow-card:
+    0 1px 2px rgb(var(--shadow-color) / calc(0.04 * var(--shadow-strength))),
+    0 4px 16px -4px rgb(var(--shadow-color) / calc(0.06 * var(--shadow-strength)));
   --shadow-panel:
-    0 1px 3px rgb(var(--shadow-color) / 0.08), 0 12px 32px -8px rgb(var(--shadow-color) / 0.18);
+    0 2px 6px rgb(var(--shadow-color) / 0.05), 0 20px 48px -12px rgb(var(--shadow-color) / 0.18);
 
   --ease-out: var(--ease-out);
   --ease-in-out: var(--ease-in-out);
 
-  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  /* Document text only (quoted passages, notes): the client's words, not the interface's. */
-  --font-serif: 'IBM Plex Serif', ui-serif, Georgia, 'Times New Roman', serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-sans: 'Geist Sans', 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* One family: document text (passages, notes) is set apart by the highlight, not a second face. */
+  --font-serif: var(--font-sans);
+  --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 }
 
 /* Type scale (docs/DESIGN.md, "Type"). One family; weight and color carry the hierarchy. */
 @theme {
-  --text-display: 52px;
+  --text-display: 56px;
   --text-display--line-height: 1.04;
-  --text-display--letter-spacing: -0.032em;
-  --text-display--font-weight: 600;
-  --text-section: 34px;
+  --text-display--letter-spacing: -0.04em;
+  --text-display--font-weight: 500;
+  --text-section: 36px;
   --text-section--line-height: 1.12;
-  --text-section--letter-spacing: -0.025em;
-  --text-section--font-weight: 600;
+  --text-section--letter-spacing: -0.03em;
+  --text-section--font-weight: 500;
   --text-h1: 26px;
   --text-h1--line-height: 32px;
-  --text-h1--letter-spacing: -0.02em;
+  --text-h1--letter-spacing: -0.025em;
   --text-h1--font-weight: 600;
   --text-h2: 18px;
   --text-h2--line-height: 26px;
@@ -247,7 +241,7 @@
   --text-label--line-height: 16px;
   --text-label--font-weight: 500;
   --text-doc: 15px;
-  --text-doc--line-height: 25px;
+  --text-doc--line-height: 24px;
 
   --breakpoint-xs: 30rem;
 }
@@ -339,7 +333,11 @@
   display: none;
 }
 
-/* Motion: short, ease-out, never bouncy. */
+/*
+ * Motion (docs/DESIGN.md, "Motion"). Felt, not watched: ease-out, 140 to 420ms, transform and
+ * opacity only, nothing bounces. Every page, dialog, list and button moves a little;
+ * prefers-reduced-motion turns all of it off (bottom of this file).
+ */
 @keyframes pp-fade-in {
   from {
     opacity: 0;
@@ -348,12 +346,29 @@
 @keyframes pp-rise-in {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(8px);
+  }
+}
+@keyframes pp-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes pp-scale-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.97);
+  }
+}
+@keyframes pp-sheet-in {
+  from {
+    transform: translateY(100%);
   }
 }
 @keyframes pp-slide-in-right {
   from {
-    transform: translateX(16px);
+    transform: translateX(24px);
     opacity: 0;
   }
 }
@@ -372,13 +387,80 @@
   animation: pp-fade-in var(--duration-base) var(--ease-out);
 }
 .animate-rise-in {
-  animation: pp-rise-in var(--duration-slow) var(--ease-out);
+  animation: pp-rise-in var(--duration-slow) var(--ease-out) backwards;
+}
+/* A page or tab arriving (AppShell keys it on the route). */
+.animate-page {
+  animation: pp-page-in 420ms var(--ease-out) backwards;
+}
+/* Dialogs: scale in from 97% on desktop, slide up as a sheet on phones. */
+.animate-dialog {
+  animation: pp-scale-in 240ms var(--ease-out) backwards;
+}
+@media (max-width: 639px) {
+  .animate-dialog {
+    animation: pp-sheet-in 320ms var(--ease-out) backwards;
+  }
 }
 .animate-slide-in-right {
   animation: pp-slide-in-right var(--duration-slow) var(--ease-out);
 }
 .animate-slide-in-left {
   animation: pp-slide-in-left var(--duration-slow) var(--ease-out);
+}
+
+/* Lists cascade in: each child 40ms after the one before (up to the tenth). */
+.stagger > * {
+  animation: pp-rise-in 380ms var(--ease-out) backwards;
+  animation-delay: calc(var(--i, 9) * 40ms);
+}
+.stagger > :nth-child(1) { --i: 0; }
+.stagger > :nth-child(2) { --i: 1; }
+.stagger > :nth-child(3) { --i: 2; }
+.stagger > :nth-child(4) { --i: 3; }
+.stagger > :nth-child(5) { --i: 4; }
+.stagger > :nth-child(6) { --i: 5; }
+.stagger > :nth-child(7) { --i: 6; }
+.stagger > :nth-child(8) { --i: 7; }
+.stagger > :nth-child(9) { --i: 8; }
+
+/* Landing sections rise in as they scroll into view. Hidden only once JavaScript has said it
+   will reveal them (the .js class from index.html), so content is never lost without scripts. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 700ms var(--ease-out),
+    transform 700ms var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.js .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Text links: an underline that draws in from the left. */
+.link-draw {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size var(--duration-base) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+.link-draw:hover {
+  background-size: 100% 1px;
+}
+
+/* Cards that open something lift a pixel on hover. */
+.lift {
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+@media (hover: hover) {
+  .lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+  }
 }
 
 /* Skeleton: a soft sweep instead of a blink. */
@@ -405,14 +487,14 @@
   color: var(--text1);
 }
 
-/* Press feedback: buttons acknowledge the click (transform only). */
+/* Press feedback: every button eases its colors on hover and dips to 97% when pressed. */
 .press {
-  transition-property: transform, background-color, border-color, color;
+  transition-property: transform, background-color, border-color, color, box-shadow, opacity;
   transition-duration: var(--duration-fast);
   transition-timing-function: var(--ease-out);
 }
-.press:active:not(:disabled) {
-  transform: scale(0.98);
+.press:active:not(:disabled):not([aria-disabled='true']) {
+  transform: scale(0.97);
 }
 
 /* Overlays keep their scroll to themselves. */
@@ -421,6 +503,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .press:active:not(:disabled) {
+    transform: none;
+  }
   *,
   *::before,
   *::after {

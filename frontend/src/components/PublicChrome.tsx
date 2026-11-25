@@ -14,7 +14,7 @@ export function PublicHeader() {
   const { status } = useAuth()
   const signedIn = status === 'signed-in'
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-bg">
+    <header className="animate-fade-in sticky top-0 z-30 border-b border-border bg-bg">
       <a
         href="#main"
         className="fixed top-2 left-2 z-50 -translate-y-20 rounded-control bg-accent px-3 py-2 text-body font-medium text-on-accent focus:translate-y-0"
@@ -27,7 +27,7 @@ export function PublicHeader() {
         </Link>
         <nav aria-label="Sections" className="hidden flex-1 items-center gap-1 md:flex">
           {SECTIONS.map((s) => (
-            <a key={s.href} href={s.href} className="rounded-control px-3 py-2 text-body text-muted transition-colors hover:text-text">
+            <a key={s.href} href={s.href} className="rounded-control px-3 py-2 text-body text-muted transition-colors duration-150 hover:text-text">
               {s.label}
             </a>
           ))}

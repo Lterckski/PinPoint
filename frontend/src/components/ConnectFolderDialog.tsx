@@ -66,7 +66,7 @@ export function ConnectFolderDialog({ onConnect, onClose }: ConnectFolderDialogP
         aria-label="Connect a local folder"
         onSubmit={submit}
         onMouseDown={(e) => e.stopPropagation()}
-        className="flex w-full max-w-[480px] flex-col gap-5 overflow-y-auto overscroll-contain rounded-t-panel border border-border bg-surface p-5 shadow-panel max-h-[92dvh] animate-rise-in sm:rounded-panel sm:p-6"
+        className="flex w-full max-w-[480px] flex-col gap-5 overflow-y-auto overscroll-contain rounded-t-panel border border-border bg-surface p-5 shadow-panel max-h-[92dvh] animate-dialog sm:rounded-panel sm:p-6"
       >
         <header className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">

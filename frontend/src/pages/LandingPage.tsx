@@ -8,11 +8,13 @@ import sourceDark from '../assets/landing/source-dark.webp'
 import sourceLight from '../assets/landing/source-light.webp'
 import { PublicFooter, PublicHeader } from '../components/PublicChrome'
 import { useAuth } from '../lib/auth'
+import { useReveal } from '../lib/reveal'
 
 // Landing page. It shows the real product (screenshots of the app, light and dark) and states
 // only facts the code backs. Static; no tracking, no CDN.
 export function LandingPage() {
   const { status } = useAuth()
+  useReveal()
   const signedIn = status === 'signed-in'
   const appHref = signedIn ? '/workspaces' : '/signin'
   const appLabel = signedIn ? 'Open workspaces' : 'Sign in'
@@ -24,7 +26,7 @@ export function LandingPage() {
         {/* Hero: the claim on the left, the product answering a question on the right. */}
         <section className="overflow-x-clip border-b border-border">
           <div className="mx-auto grid max-w-[1200px] items-center gap-12 px-4 pt-14 pb-16 sm:px-8 lg:min-h-[min(640px,calc(100dvh-64px))] lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14 lg:py-16">
-            <div className="flex min-w-0 flex-col items-start gap-6">
+            <div className="stagger flex min-w-0 flex-col items-start gap-6">
               <h1 className="text-[40px] leading-[1.05] font-semibold tracking-[-0.03em] [overflow-wrap:break-word] text-text sm:text-display">
                 Every answer, cited to&nbsp;the&nbsp;page.
               </h1>
@@ -47,7 +49,7 @@ export function LandingPage() {
               width={1680}
               height={1080}
               alt="PinPoint answering “When is the Santos response due?” with two numbered sources: a motion and a court order."
-              className="lg:w-[min(820px,58vw)]"
+              className="animate-page [animation-delay:200ms] lg:w-[min(820px,58vw)]"
               priority
             />
           </div>
@@ -55,7 +57,7 @@ export function LandingPage() {
 
         {/* Sources */}
         <section id="sources" className="scroll-mt-20 border-b border-border bg-surface">
-          <div className="mx-auto grid max-w-[1200px] items-center gap-12 px-4 py-20 sm:px-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-20 lg:py-28">
+          <div className="reveal mx-auto grid max-w-[1200px] items-center gap-12 px-4 py-20 sm:px-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-20 lg:py-28">
             <div className="flex min-w-0 flex-col gap-8">
               <div className="flex flex-col gap-4">
                 <h2 className="text-[28px] leading-[1.15] font-semibold tracking-[-0.025em] text-text sm:text-section">
@@ -84,7 +86,7 @@ export function LandingPage() {
 
         {/* Formats */}
         <section id="formats" className="scroll-mt-20 border-b border-border">
-          <div className="mx-auto flex max-w-[1200px] flex-col gap-10 px-4 py-20 sm:px-8 lg:py-28">
+          <div className="reveal mx-auto flex max-w-[1200px] flex-col gap-10 px-4 py-20 sm:px-8 lg:py-28">
             <div className="flex flex-col gap-4">
               <h2 className="max-w-[22ch] text-[28px] leading-[1.15] font-semibold tracking-[-0.025em] text-text sm:text-section">
                 Reads the files a practice actually keeps.
@@ -120,7 +122,7 @@ export function LandingPage() {
 
         {/* Not found */}
         <section id="not-found" className="scroll-mt-20 border-b border-border bg-surface">
-          <div className="mx-auto grid max-w-[1200px] items-center gap-12 px-4 py-20 sm:px-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-20 lg:py-28">
+          <div className="reveal mx-auto grid max-w-[1200px] items-center gap-12 px-4 py-20 sm:px-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-20 lg:py-28">
             <Shot
               light={notFoundLight}
               dark={notFoundDark}
@@ -143,7 +145,7 @@ export function LandingPage() {
 
         {/* Privacy: the one inverted band. */}
         <section id="privacy" className="scroll-mt-20 bg-band text-on-band">
-          <div className="mx-auto grid max-w-[1200px] gap-12 px-4 py-20 sm:px-8 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-20 lg:py-28">
+          <div className="reveal mx-auto grid max-w-[1200px] gap-12 px-4 py-20 sm:px-8 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-20 lg:py-28">
             <h2 className="max-w-[16ch] text-[28px] leading-[1.15] font-semibold tracking-[-0.025em] sm:text-section">
               Client files stay on the firm's computer.
             </h2>
@@ -160,7 +162,7 @@ export function LandingPage() {
 
         {/* Close on the one action. */}
         <section className="border-b border-border">
-          <div className="mx-auto flex max-w-[1200px] flex-col items-start gap-6 px-4 py-20 sm:px-8 md:flex-row md:items-center md:justify-between lg:py-24">
+          <div className="reveal mx-auto flex max-w-[1200px] flex-col items-start gap-6 px-4 py-20 sm:px-8 md:flex-row md:items-center md:justify-between lg:py-24">
             <div className="flex flex-col gap-2">
               <h2 className="text-[28px] leading-[1.15] font-semibold tracking-[-0.025em] text-text sm:text-section">
                 Start with one client's folder.
@@ -226,7 +228,7 @@ function Shot({
 }) {
   const img = 'block h-auto w-full'
   return (
-    <figure className={`min-w-0 overflow-hidden rounded-panel border border-border-strong bg-surface shadow-panel ${className}`}>
+    <figure className={`min-w-0 overflow-hidden rounded-panel border border-border bg-surface shadow-panel ${className}`}>
       <img src={light} alt={alt} width={width} height={height} className={`${img} dark:hidden`} fetchPriority={priority ? 'high' : undefined} loading={priority ? 'eager' : 'lazy'} />
       <img src={dark} alt={alt} width={width} height={height} className={`${img} hidden dark:block`} loading="lazy" />
     </figure>

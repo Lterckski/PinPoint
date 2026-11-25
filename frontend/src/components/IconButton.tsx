@@ -16,7 +16,7 @@ export function IconButton({ Icon, label, tone = 'default', size = 'md', classNa
       type={type}
       aria-label={label}
       title={label}
-      className={`inline-flex shrink-0 items-center justify-center rounded-control text-muted transition-colors duration-150 disabled:pointer-events-none disabled:opacity-50 ${
+      className={`inline-flex shrink-0 items-center justify-center press rounded-control text-muted disabled:pointer-events-none disabled:opacity-50 ${
         size === 'sm' ? 'size-8' : 'size-9'
       } ${tone === 'danger' ? 'hover:bg-danger-soft hover:text-danger' : 'hover:bg-surface-hover hover:text-text'} ${className}`}
       {...rest}

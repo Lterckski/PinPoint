@@ -5,8 +5,8 @@ type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
 type Size = 'sm' | 'md' | 'lg'
 
 const VARIANTS: Record<Variant, string> = {
-  primary: 'bg-accent text-on-accent shadow-subtle hover:bg-accent-hover',
-  secondary: 'border border-border-strong bg-surface text-text shadow-subtle hover:border-input hover:bg-surface-muted',
+  primary: 'bg-accent text-on-accent shadow-subtle hover:bg-accent-hover hover:shadow-card',
+  secondary: 'border border-border bg-surface text-text shadow-subtle hover:border-border-strong hover:bg-surface-muted',
   ghost: 'text-muted hover:bg-surface-hover hover:text-text',
   danger: 'border border-danger/40 bg-surface text-danger hover:bg-danger-soft',
 }
@@ -42,7 +42,7 @@ export function Button({
       type={type}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
-      className={`inline-flex shrink-0 items-center justify-center rounded-control font-medium whitespace-nowrap transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out select-none active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 ${SIZES[size]} ${VARIANTS[variant]} ${Icon || loading ? (size === 'sm' ? 'pl-2.5' : 'pl-3') : ''} ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center rounded-control font-medium whitespace-nowrap press select-none disabled:pointer-events-none disabled:opacity-50 ${SIZES[size]} ${VARIANTS[variant]} ${Icon || loading ? (size === 'sm' ? 'pl-2.5' : 'pl-3') : ''} ${className}`}
       {...rest}
     >
       {loading ? (

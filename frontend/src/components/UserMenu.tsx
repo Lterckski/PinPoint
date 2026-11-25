@@ -60,7 +60,7 @@ export function UserMenu() {
         <div
           role="menu"
           aria-label="Account"
-          className="animate-rise-in absolute right-0 bottom-full left-0 z-30 mb-1.5 flex flex-col rounded-card border border-border bg-surface p-1 shadow-panel"
+          className="animate-dialog origin-bottom absolute right-0 bottom-full left-0 z-30 mb-1.5 flex flex-col rounded-card border border-border bg-surface p-1 shadow-panel"
         >
           <button
             type="button"

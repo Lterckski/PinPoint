@@ -20,7 +20,7 @@ export function ConnectedFolders({ folders, onRescan, onDisconnect }: ConnectedF
       <h2 id="folders-heading" className="text-h3 text-text">
         Connected folders
       </h2>
-      <div className="flex flex-col divide-y divide-border overflow-hidden rounded-card border border-border bg-surface shadow-subtle">
+      <div className="stagger flex flex-col divide-y divide-border overflow-hidden rounded-card border border-border bg-surface shadow-subtle">
         {folders.map((folder) => (
           <div key={folder.id} className="flex flex-wrap items-center gap-x-3.5 gap-y-2 px-3 py-3 sm:flex-nowrap sm:px-4">
             <div className="flex size-9 shrink-0 items-center justify-center rounded-control bg-accent-soft text-accent">

@@ -1,5 +1,6 @@
-import { Fragment, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { Link, NavLink, Outlet, useParams } from 'react-router-dom'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { Link, Outlet, useLocation, useParams } from 'react-router-dom'
+import { SegmentedTabs } from '../components/SegmentedTabs'
 import { BookMarked, ChevronRight, FileStack, FolderX, MessageSquareText } from 'lucide-react'
 import { EmptyState, Skeleton } from '../components/States'
 import type { WorkspaceOutlet } from '../lib/workspaceOutlet'
@@ -14,6 +15,7 @@ const TABS = [
 // Workspace header from Figma 04 Files (6:528): breadcrumb, title, industry pill, tabs.
 export function WorkspaceLayout() {
   const { id = '' } = useParams()
+  const { pathname } = useLocation()
   const { workspaces, loading } = useWorkspaces()
   const ws = workspaces.find((w) => w.id === id)
   const [actions, setActions] = useState<ReactNode>(null)
@@ -30,7 +32,7 @@ export function WorkspaceLayout() {
         actions={
           <Link
             to="/workspaces"
-            className="inline-flex h-9 items-center rounded-control bg-accent px-3.5 text-body font-medium text-on-accent hover:bg-accent-hover"
+            className="press inline-flex h-9 items-center rounded-control bg-accent px-3.5 text-body font-medium text-on-accent hover:bg-accent-hover"
           >
             Back to workspaces
           </Link>
@@ -43,7 +45,7 @@ export function WorkspaceLayout() {
 
   return (
     <div className="flex flex-col gap-6">
-      <header className="flex flex-col gap-4">
+      <header className="flex flex-col gap-5">
         <nav aria-label="Breadcrumb" className="hidden items-center gap-1.5 text-label sm:flex">
           <Link to="/workspaces" className="text-subtle transition-colors hover:text-text">
             Workspaces
@@ -70,31 +72,20 @@ export function WorkspaceLayout() {
           <div className="flex shrink-0 items-center gap-2">{actions}</div>
         </div>
 
-        <nav aria-label="Workspace sections" className="no-scrollbar -mx-4 flex gap-1 overflow-x-auto border-b border-border px-4 sm:mx-0 sm:px-0">
-          {TABS.map((tab) => (
-            <NavLink
-              key={tab.to}
-              to={tab.to}
-              className={({ isActive }) =>
-                `relative -mb-px flex h-10 shrink-0 items-center gap-2 rounded-t-control px-3 text-body font-medium transition-colors after:absolute after:inset-x-2 after:-bottom-px after:h-0.5 after:rounded-pill ${
-                  isActive ? 'text-text after:bg-accent' : 'text-muted after:bg-transparent hover:text-text'
-                }`
-              }
-            >
-              <tab.Icon size={16} strokeWidth={1.75} aria-hidden="true" />
-              {tab.label}
-              {tab.to === 'files' && ws && (
-                <span className="tabular rounded-pill bg-surface-muted px-1.5 text-label text-muted">{ws.file_count}</span>
-              )}
-            </NavLink>
-          ))}
-        </nav>
+        <SegmentedTabs
+          label="Workspace sections"
+          tabs={TABS.map((tab) => ({
+            ...tab,
+            badge:
+              tab.to === 'files' && ws ? <span className="tabular text-label text-subtle">{ws.file_count}</span> : undefined,
+          }))}
+        />
       </header>
 
-      {/* Keyed by workspace so each tab starts fresh when switching clients. */}
-      <Fragment key={id}>
+      {/* Keyed by tab, so each tab rises in when you switch to it (and starts fresh per client). */}
+      <div key={pathname} className="animate-page">
         <Outlet context={outlet} />
-      </Fragment>
+      </div>
     </div>
   )
 }

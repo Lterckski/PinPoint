@@ -16,7 +16,7 @@ export function SidebarItem({ to, label, Icon, active = false, count }: SidebarI
     <Link
       to={to}
       aria-current={active ? 'page' : undefined}
-      className={`group flex h-9 w-full items-center gap-2.5 rounded-control px-2.5 text-body font-medium transition-colors duration-150 ${
+      className={`group flex h-9 w-full items-center gap-2.5 press rounded-control px-2.5 text-body font-medium ${
         active ? 'bg-accent-soft text-accent' : 'text-muted hover:bg-surface-hover hover:text-text'
       }`}
     >

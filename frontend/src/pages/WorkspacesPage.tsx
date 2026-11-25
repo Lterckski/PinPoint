@@ -123,7 +123,7 @@ export function WorkspacesPage() {
               Questions you ask in any workspace show up here, so you can reopen an answer in one click.
             </EmptyState>
           ) : (
-            <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-card border border-border bg-surface">
+            <ul className="stagger flex flex-col divide-y divide-border overflow-hidden rounded-card border border-border bg-surface shadow-subtle">
               {recent.map((r) => (
                 <li key={r.id}>
                   <Link

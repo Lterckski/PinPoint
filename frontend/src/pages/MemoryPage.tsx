@@ -110,7 +110,7 @@ function NotesSection({ ws }: { ws: string }) {
           Add things like preferences, deadlines you were told by phone, or who to contact.
         </EmptyState>
       ) : (
-        <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-card border border-border bg-surface shadow-subtle">
+        <ul className="stagger flex flex-col divide-y divide-border overflow-hidden rounded-card border border-border bg-surface shadow-subtle">
           {notes?.map((note) => (
             <li key={note.id} className="flex items-start gap-3 px-4 py-3.5">
               <StickyNote size={16} strokeWidth={1.75} className="mt-1 shrink-0 text-subtle" aria-hidden="true" />
@@ -189,7 +189,7 @@ function HistorySections({ ws }: { ws: string }) {
 
 function HistoryList({ ws, items }: { ws: string; items: HistoryItem[] }) {
   return (
-    <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-card border border-border bg-surface shadow-subtle">
+    <ul className="stagger flex flex-col divide-y divide-border overflow-hidden rounded-card border border-border bg-surface shadow-subtle">
       {items.map((item) => (
         <li key={item.id}>
           <Link to={`/w/${ws}/ask?h=${item.id}`} className="flex flex-col gap-2 px-4 py-3.5 transition-colors hover:bg-surface-muted sm:flex-row sm:items-start sm:gap-3">

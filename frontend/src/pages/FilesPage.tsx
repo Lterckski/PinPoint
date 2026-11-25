@@ -295,7 +295,7 @@ export function FilesPage() {
               Add this client's PDFs, scans, photos or spreadsheets. PinPoint reads them here, and then you can ask questions.
             </EmptyState>
           ) : (
-            <div className="flex flex-col divide-y divide-border overflow-hidden rounded-card border border-border bg-surface shadow-subtle">
+            <div className="stagger flex flex-col divide-y divide-border overflow-hidden rounded-card border border-border bg-surface shadow-subtle">
               {files.map((file) => (
                 <FileRow
                   key={file.id}

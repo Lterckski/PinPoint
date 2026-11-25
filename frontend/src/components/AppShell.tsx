@@ -84,7 +84,10 @@ export function AppShell() {
           </header>
 
           <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1280px] min-w-0 flex-1 px-4 pt-5 pb-16 focus:outline-none sm:px-6 lg:px-10 lg:pt-8 xl:px-12">
-            <Outlet />
+            {/* Each page arrives with a short rise; a workspace's tabs animate inside it instead. */}
+            <div key={pageKey(pathname)} className="animate-page">
+              <Outlet />
+            </div>
           </main>
         </div>
       </div>
@@ -100,4 +103,10 @@ export function AppShell() {
       )}
     </WorkspacesProvider>
   )
+}
+
+/** One key per page: /w/:id/... counts as one page so switching tabs keeps the header still. */
+function pageKey(pathname: string): string {
+  const m = pathname.match(/^\/w\/[^/]+/)
+  return m ? m[0] : pathname
 }

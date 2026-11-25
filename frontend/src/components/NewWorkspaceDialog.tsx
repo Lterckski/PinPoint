@@ -41,13 +41,14 @@ export function NewWorkspaceDialog({ onCreate, onClose }: NewWorkspaceDialogProp
   }
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-scrim p-4" onMouseDown={onClose}>
+    <div className="animate-fade-in fixed inset-0 z-40 flex items-end justify-center bg-scrim p-0 sm:items-center sm:p-4" onMouseDown={onClose}>
       <form
         role="dialog"
+        aria-modal="true"
         aria-label="New workspace"
         onSubmit={submit}
         onMouseDown={(e) => e.stopPropagation()}
-        className="flex w-full max-w-[440px] flex-col gap-5 rounded-card border border-border bg-surface p-6 shadow-panel"
+        className="flex w-full max-w-[440px] flex-col gap-5 overflow-y-auto overscroll-contain rounded-t-panel border border-border bg-surface p-5 shadow-panel max-h-[92dvh] animate-rise-in sm:rounded-panel sm:p-6"
       >
         <header className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -86,7 +87,7 @@ export function NewWorkspaceDialog({ onCreate, onClose }: NewWorkspaceDialogProp
             id={industryId}
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
-            className="w-full rounded-control border border-border bg-surface px-3 py-2.5 text-body text-text focus:border-accent focus:outline-none"
+            className="h-10 w-full rounded-control border border-input bg-surface px-3 text-body text-text shadow-subtle focus:border-accent focus:ring-3 focus:ring-accent/20 focus:outline-none focus-visible:outline-none"
           >
             {INDUSTRIES.map((i) => (
               <option key={i}>{i}</option>

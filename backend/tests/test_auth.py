@@ -33,7 +33,11 @@ def check(label: str, condition: bool) -> None:
         sys.exit(1)
 
 
-with TestClient(main.app, base_url="http://localhost:8000") as c:
+with TestClient(main.app, base_url="http://localhost:8000", client=("192.168.1.20", 5000)) as remote:
+    r = remote.post("/api/auth/setup", json={"name": "Eve", "email": "eve@x.ph", "password": PASSWORD}, headers=CSRF)
+    check("setup from another computer -> 403", r.status_code == 403 and auth.setup_required())
+
+with TestClient(main.app, base_url="http://localhost:8000", client=("127.0.0.1", 5000)) as c:
     # Signed out
     r = c.get("/api/auth/session")
     check("session: signed out, setup required", r.status_code == 200 and r.json()["user"] is None and r.json()["setup_required"])
@@ -139,7 +143,7 @@ with TestClient(main.app, base_url="http://localhost:8000") as c:
     check("login: a fresh token each time", token_a and token_a != first_token)
 
     # A second device
-    with TestClient(main.app, base_url="http://localhost:8000") as other:
+    with TestClient(main.app, base_url="http://localhost:8000", client=("127.0.0.1", 5001)) as other:
         other.post("/api/auth/login", json={"email": "ana@reyes.ph", "password": PASSWORD}, headers=CSRF)
         check("second device signed in", other.get("/api/workspaces").status_code == 200)
 
@@ -175,6 +179,13 @@ with TestClient(main.app, base_url="http://localhost:8000") as c:
     c.cookies.clear()
     c.cookies.set(auth.COOKIE_NAME, "x" * 500)
     check("oversized token rejected", c.get("/api/workspaces").status_code == 401)
+
+# Throttle memory stays bounded however many emails are tried
+auth.reset_throttle()
+for i in range(auth.THROTTLE_MAX_KEYS + 50):
+    auth._record_failure("10.0.0.9", f"user{i}@x.ph")
+check("throttle keys stay bounded", len(auth._failures) <= auth.THROTTLE_MAX_KEYS + 2)
+auth.reset_throttle()
 
 # Expiry
 token = auth.start_session(users[0]["id"])

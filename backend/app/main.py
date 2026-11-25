@@ -219,6 +219,8 @@ def auth_setup(body: SetupRequest, request: Request, response: Response) -> dict
     """Create the owner account. Only works while no account exists."""
     if not auth.enabled():
         return JSONResponse(status_code=404, content={"detail": "Sign-in is turned off on this server."})
+    if _client_address(request) not in ("127.0.0.1", "::1") and not auth.remote_setup_allowed():
+        return JSONResponse(status_code=403, content={"detail": "Set up PinPoint from the computer it runs on."})
     try:
         user = auth.create_owner(body.name, body.email, body.password)
     except auth.AuthError as e:

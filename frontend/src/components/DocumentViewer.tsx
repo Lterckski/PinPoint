@@ -353,7 +353,7 @@ function PlainView({ src, csv }: { src: string; csv: boolean }) {
   const [error, setError] = useState<string | null>(null)
   useEffect(() => {
     let alive = true
-    fetch(src).then(
+    fetch(src, { credentials: 'include' }).then(
       async (res) => {
         if (!alive) return
         if (res.ok) setText(await res.text())

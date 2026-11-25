@@ -1,6 +1,9 @@
 import * as mock from '../mocks/server'
 import type {
+  AccountDetails,
   AskResult,
+  AuthSession,
+  AuthUser,
   CreateWorkspaceRequest,
   FileItem,
   FileText,
@@ -23,12 +26,23 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+/** Fired when the server says the session is gone, so the app can send the user to sign in. */
+export const UNAUTHORIZED_EVENT = 'pinpoint:unauthorized'
+
+async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const method = (init.method ?? 'GET').toUpperCase()
+  const headers = new Headers(init.headers)
+  // Every write carries this header; the server refuses writes without it (CSRF protection).
+  if (method !== 'GET' && method !== 'HEAD') headers.set('X-PinPoint-CSRF', '1')
   let res: Response
   try {
-    res = await fetch(`${API_BASE}${path}`, init)
+    // The session cookie is HttpOnly: the browser sends it, scripts never see it.
+    res = await fetch(`${API_BASE}${path}`, { ...init, headers, credentials: 'include' })
   } catch {
     throw new ApiError('Could not reach the PinPoint server.', 0)
+  }
+  if (res.status === 401 && !path.startsWith('/api/auth/')) {
+    window.dispatchEvent(new Event(UNAUTHORIZED_EVENT))
   }
   if (!res.ok) {
     let message = `Request failed (${res.status})`
@@ -65,6 +79,34 @@ export function assetUrl(path: string): string {
 }
 
 export const api = {
+  session: (): Promise<AuthSession> => (USE_MOCKS ? mock.session() : request('/api/auth/session')),
+
+  signIn: (email: string, password: string): Promise<AuthSession> =>
+    USE_MOCKS ? mock.signIn(email, password) : request('/api/auth/login', json('POST', { email, password })),
+
+  setup: (name: string, email: string, password: string): Promise<AuthSession> =>
+    USE_MOCKS ? mock.setup(name, email, password) : request('/api/auth/setup', json('POST', { name, email, password })),
+
+  signOut: async (): Promise<void> => {
+    if (USE_MOCKS) return mock.signOut()
+    await request('/api/auth/logout', { method: 'POST' })
+  },
+
+  signOutEverywhere: async (): Promise<void> => {
+    if (USE_MOCKS) return mock.signOut()
+    await request('/api/auth/logout-all', { method: 'POST' })
+  },
+
+  account: (): Promise<AccountDetails> => (USE_MOCKS ? mock.account() : request('/api/auth/me')),
+
+  updateProfile: (name: string): Promise<AuthUser> =>
+    USE_MOCKS ? mock.updateProfile(name) : request('/api/auth/me', json('PATCH', { name })),
+
+  changePassword: (currentPassword: string, newPassword: string): Promise<AuthSession> =>
+    USE_MOCKS
+      ? mock.changePassword(currentPassword, newPassword)
+      : request('/api/auth/password', json('POST', { current_password: currentPassword, new_password: newPassword })),
+
   listWorkspaces: (): Promise<Workspace[]> =>
     USE_MOCKS ? mock.listWorkspaces() : request('/api/workspaces'),
 

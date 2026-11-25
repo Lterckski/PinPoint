@@ -28,17 +28,17 @@ export function WorkspaceCard({ workspace, to, onDelete }: WorkspaceCardProps) {
   const card = (
     <Link
       to={to ?? `/w/${workspace.id}/ask`}
-      className="flex h-full flex-col gap-3.5 rounded-card border border-border bg-surface p-5 shadow-subtle hover:border-accent"
+      className="flex h-full min-h-[164px] flex-col justify-between gap-6 rounded-card border border-border bg-surface p-5 shadow-subtle transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:border-accent-border hover:shadow-card"
     >
-      <div className="flex items-center justify-between">
-        <div className="flex size-10 items-center justify-center rounded-control bg-accent-soft text-accent">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex size-10 items-center justify-center rounded-card bg-accent-soft text-accent">
           <IndustryIcon industry={workspace.industry} />
         </div>
-        <span className="rounded-pill bg-surface-muted px-2 py-[3px] text-label text-muted">{workspace.industry}</span>
+        <span className="truncate rounded-pill border border-border px-2 py-[2px] text-label text-muted">{workspace.industry}</span>
       </div>
       <div className="flex flex-col gap-1">
-        <p className="text-h3 text-text">{workspace.name}</p>
-        <p className="text-small text-muted">
+        <p className="truncate text-h2 text-text">{workspace.name}</p>
+        <p className="tabular text-small text-subtle">
           {workspace.file_count} file{workspace.file_count === 1 ? '' : 's'} · Updated {timeAgo(workspace.updated_at)}
         </p>
       </div>
@@ -53,7 +53,7 @@ export function WorkspaceCard({ workspace, to, onDelete }: WorkspaceCardProps) {
         onClick={() => onDelete(workspace)}
         title="Delete workspace"
         aria-label={`Delete workspace ${workspace.name}`}
-        className="absolute right-4 bottom-4 flex size-8 items-center justify-center rounded-control text-muted opacity-0 transition hover:bg-danger-soft hover:text-danger focus-visible:opacity-100 group-hover:opacity-100"
+        className="absolute right-3.5 bottom-3.5 flex size-8 items-center justify-center rounded-control text-subtle transition hover:bg-danger-soft hover:text-danger focus-visible:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-focus-within:opacity-100 [@media(hover:hover)]:group-hover:opacity-100"
       >
         <Trash2 size={16} strokeWidth={1.75} />
       </button>

@@ -255,6 +255,12 @@ cd backend && source .venv/bin/activate && uvicorn app.main:app --reload --port 
 cd frontend && npm run dev    # http://localhost:5173
 ```
 
-`GET http://localhost:8000/api/health` reports the LLM, the embedding model, and MinerU server status. Restart the backend after editing `backend/.env`.
+Open http://localhost:5173. The first visit shows **Set up PinPoint**: create the owner account (from the computer PinPoint runs on). After that, everyone signs in with an account. The demo scripts sign in from the environment:
+
+```
+PINPOINT_EMAIL=you@firm.ph PINPOINT_PASSWORD='your password' .venv/bin/python scripts/reset_demo.py
+```
+
+`GET http://localhost:8000/api/health` reports the LLM, the embedding model, and MinerU server status when signed in (signed out it returns only `{"ok": true}`). Restart the backend after editing `backend/.env`.
 
 GET http://localhost:8000/api/health reports the LLM provider and MinerU server status. Restart the backend after editing backend/.env.

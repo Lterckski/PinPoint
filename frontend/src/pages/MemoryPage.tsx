@@ -1,17 +1,21 @@
-import { Bookmark, History, Loader2, StickyNote, Trash2 } from 'lucide-react'
+import { Bookmark, History, StickyNote, Trash2 } from 'lucide-react'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Button } from '../components/Button'
+import { IconButton } from '../components/IconButton'
+import { EmptyState, ErrorState, Skeleton } from '../components/States'
 import { StatusBadge } from '../components/StatusBadge'
 import { api } from '../lib/api'
 import { dayLabel, timeAgo } from '../lib/format'
 import type { HistoryItem, Note } from '../lib/types'
 
-// Memory tab (not in Figma): built from the existing cards, rows, and type scale.
+const IS_MAC = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)
+
+// Memory tab: notes the client's answers can cite, saved answers, and question history.
 export function MemoryPage() {
   const { id = '' } = useParams()
   return (
-    <div className="flex max-w-[820px] flex-col gap-10">
+    <div className="flex max-w-[820px] flex-col gap-12">
       <NotesSection ws={id} />
       <HistorySections ws={id} />
     </div>
@@ -85,42 +89,36 @@ function NotesSection({ ws }: { ws: string }) {
           maxLength={4000}
           placeholder="Remember something about this client…"
           aria-label="New note"
-          className="w-full resize-none rounded-control border border-border bg-surface px-3 py-2.5 text-body text-text placeholder:text-muted focus:border-accent focus:outline-none"
+          className="w-full resize-y rounded-control border border-input bg-surface px-3 py-2.5 text-body text-text transition-[border-color,box-shadow] placeholder:text-subtle focus:border-accent focus:ring-3 focus:ring-accent/20 focus:outline-none focus-visible:outline-none"
         />
         <div className="flex items-center justify-between gap-3">
-          <span className="text-label text-muted">⌘ Enter to save</span>
-          <Button type="submit" disabled={!text.trim() || saving} Icon={saving ? Loader2 : undefined}>
+          <span className="hidden text-label text-subtle sm:inline">
+            <kbd className="font-sans">{IS_MAC ? '⌘' : 'Ctrl'}</kbd> + <kbd className="font-sans">Enter</kbd> to save
+          </span>
+          <Button type="submit" disabled={!text.trim()} loading={saving} className="ml-auto">
             Add note
           </Button>
         </div>
       </form>
 
-      {error && <p className="text-small text-danger">{error}</p>}
+      {error && <ErrorState title="Notes" message={error} />}
 
       {notes === null && !error ? (
-        <div className="h-[60px] animate-pulse rounded-card bg-surface-muted" />
+        <Skeleton className="h-[64px] rounded-card" />
       ) : notes && notes.length === 0 ? (
-        <div className="flex flex-col items-center gap-2 rounded-card border border-dashed border-border px-6 py-8 text-center">
-          <StickyNote size={20} strokeWidth={1.75} className="text-muted" />
-          <p className="text-body text-text">No notes yet</p>
-          <p className="text-small text-muted">Add things like preferences, deadlines you were told by phone, or who to contact.</p>
-        </div>
+        <EmptyState Icon={StickyNote} title="No notes yet" compact>
+          Add things like preferences, deadlines you were told by phone, or who to contact.
+        </EmptyState>
       ) : (
-        <ul className="flex flex-col overflow-hidden rounded-card border border-border bg-surface">
+        <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-card border border-border bg-surface shadow-subtle">
           {notes?.map((note) => (
-            <li key={note.id} className="flex items-start gap-3 border-b border-border px-4 py-3.5 last:border-b-0">
-              <StickyNote size={16} strokeWidth={1.75} className="mt-[3px] shrink-0 text-muted" />
-              <p className="min-w-0 flex-1 font-serif text-doc whitespace-pre-line text-text">{note.text}</p>
-              <span className="shrink-0 pt-1 text-label text-muted">{dayLabel(note.created_at)}</span>
-              <button
-                type="button"
-                onClick={() => void remove(note)}
-                aria-label="Delete note"
-                title="Delete note"
-                className="flex size-7 shrink-0 items-center justify-center rounded-control text-muted hover:bg-danger-soft hover:text-danger"
-              >
-                <Trash2 size={15} strokeWidth={1.75} />
-              </button>
+            <li key={note.id} className="flex items-start gap-3 px-4 py-3.5">
+              <StickyNote size={16} strokeWidth={1.75} className="mt-1 shrink-0 text-subtle" aria-hidden="true" />
+              <div className="flex min-w-0 flex-1 flex-col gap-1">
+                <p className="font-serif text-doc whitespace-pre-line text-text">{note.text}</p>
+                <span className="text-label text-subtle">{dayLabel(note.created_at)}</span>
+              </div>
+              <IconButton Icon={Trash2} label="Delete note" tone="danger" size="sm" onClick={() => void remove(note)} className="text-subtle" />
             </li>
           ))}
         </ul>
@@ -156,11 +154,13 @@ function HistorySections({ ws }: { ws: string }) {
       <section className="flex flex-col gap-4" aria-label="Saved answers">
         <SectionHeader title="Saved answers" hint="Every answered question is saved here automatically. Open one to see it with its sources; use Save on the Ask tab to remove one." />
         {error ? (
-          <p className="text-small text-danger">{error}</p>
+          <ErrorState title="Couldn't load history" message={error} />
         ) : items === null ? (
-          <div className="h-[60px] animate-pulse rounded-card bg-surface-muted" />
+          <Skeleton className="h-[64px] rounded-card" />
         ) : saved.length === 0 ? (
-          <EmptyState Icon={Bookmark} title="No saved answers yet" hint="Answers to questions you ask on the Ask tab are saved here automatically." />
+          <EmptyState Icon={Bookmark} title="No saved answers yet" compact>
+            Answers to questions you ask on the Ask tab are saved here automatically.
+          </EmptyState>
         ) : (
           <HistoryList ws={ws} items={saved} />
         )}
@@ -169,13 +169,15 @@ function HistorySections({ ws }: { ws: string }) {
       <section className="flex flex-col gap-4" aria-label="History">
         <SectionHeader title="History" hint="Every question asked in this workspace, newest first." />
         {error ? null : items === null ? (
-          <div className="h-[60px] animate-pulse rounded-card bg-surface-muted" />
+          <Skeleton className="h-[64px] rounded-card" />
         ) : items.length === 0 ? (
-          <EmptyState Icon={History} title="No questions yet" hint="Questions you ask on the Ask tab are kept here." />
+          <EmptyState Icon={History} title="No questions yet" compact>
+            Questions you ask on the Ask tab are kept here.
+          </EmptyState>
         ) : (
           [...byDay.entries()].map(([day, list]) => (
             <div key={day} className="flex flex-col gap-2">
-              <p className="text-eyebrow text-muted uppercase">{day}</p>
+              <p className="text-eyebrow text-subtle uppercase">{day}</p>
               <HistoryList ws={ws} items={list} />
             </div>
           ))
@@ -187,33 +189,25 @@ function HistorySections({ ws }: { ws: string }) {
 
 function HistoryList({ ws, items }: { ws: string; items: HistoryItem[] }) {
   return (
-    <ul className="flex flex-col overflow-hidden rounded-card border border-border bg-surface">
+    <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-card border border-border bg-surface shadow-subtle">
       {items.map((item) => (
-        <li key={item.id} className="border-b border-border last:border-b-0">
-          <Link to={`/w/${ws}/ask?h=${item.id}`} className="flex items-start gap-3 px-4 py-3.5 hover:bg-surface-muted">
+        <li key={item.id}>
+          <Link to={`/w/${ws}/ask?h=${item.id}`} className="flex flex-col gap-2 px-4 py-3.5 transition-colors hover:bg-surface-muted sm:flex-row sm:items-start sm:gap-3">
             <div className="flex min-w-0 flex-1 flex-col gap-0.5">
               <p className="truncate text-body font-medium text-text">{item.question}</p>
               <p className="line-clamp-2 text-small text-muted">{item.answer_preview}</p>
             </div>
-            <span className="shrink-0 pt-0.5 text-label text-muted">{timeAgo(item.created_at)}</span>
-            {item.saved && <Bookmark size={15} strokeWidth={1.75} className="mt-0.5 shrink-0 text-accent" aria-label="Saved" />}
-            <StatusBadge
-              status={item.status === 'answered' ? 'ready' : 'queued'}
-              label={item.status === 'answered' ? 'Answered' : 'Not found'}
-            />
+            <div className="flex shrink-0 items-center gap-2.5">
+              <span className="text-label text-subtle">{timeAgo(item.created_at)}</span>
+              {item.saved && <Bookmark size={15} strokeWidth={1.75} className="shrink-0 fill-current text-accent" aria-label="Saved" />}
+              <StatusBadge
+                status={item.status === 'answered' ? 'ready' : 'queued'}
+                label={item.status === 'answered' ? 'Answered' : 'Not found'}
+              />
+            </div>
           </Link>
         </li>
       ))}
     </ul>
-  )
-}
-
-function EmptyState({ Icon, title, hint }: { Icon: typeof Bookmark; title: string; hint: string }) {
-  return (
-    <div className="flex flex-col items-center gap-2 rounded-card border border-dashed border-border px-6 py-8 text-center">
-      <Icon size={20} strokeWidth={1.75} className="text-muted" />
-      <p className="text-body text-text">{title}</p>
-      <p className="text-small text-muted">{hint}</p>
-    </div>
   )
 }

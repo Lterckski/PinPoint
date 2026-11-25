@@ -52,17 +52,17 @@ export function FileRow({ file, onOpen, onDelete, onCancel }: FileRowProps) {
   }
 
   return (
-    <div className="flex items-center gap-3.5 rounded-control border border-border bg-surface px-4 py-3">
+    <div className="flex flex-wrap items-center gap-x-3.5 gap-y-2 px-3 py-3 transition-colors hover:bg-surface-muted/60 sm:flex-nowrap sm:px-4">
       <div className="flex size-9 shrink-0 items-center justify-center rounded-control bg-surface-muted text-muted">
-        <Icon size={18} strokeWidth={1.75} />
+        <Icon size={18} strokeWidth={1.75} aria-hidden="true" />
       </div>
-      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+      <div className="flex min-w-0 flex-1 basis-[calc(100%-6rem)] flex-col gap-0.5 sm:basis-auto">
         {onOpen && file.status === 'ready' ? (
           <button
             type="button"
             onClick={() => onOpen(file)}
             title="Open document"
-            className="truncate text-left text-body font-medium text-text hover:text-accent hover:underline"
+            className="truncate text-left text-body font-medium text-text decoration-accent-border underline-offset-2 hover:text-accent hover:underline"
           >
             {file.name}
           </button>
@@ -75,9 +75,9 @@ export function FileRow({ file, onOpen, onDelete, onCancel }: FileRowProps) {
           <p className="text-small text-danger">{file.error ?? "Couldn't read this file."}</p>
         ) : (
           <>
-          <p className="flex min-w-0 items-center gap-1.5 truncate text-small text-muted">
+          <p className="tabular flex min-w-0 items-center gap-1.5 truncate text-small text-subtle">
             {file.source === 'folder' && (
-              <span className="rounded-control border border-border px-1.5 text-label">Folder</span>
+              <span className="rounded-[5px] border border-border px-1.5 text-label text-muted">Folder</span>
             )}
             {fileMeta(file)}
           </p>
@@ -87,30 +87,26 @@ export function FileRow({ file, onOpen, onDelete, onCancel }: FileRowProps) {
         )}
       </div>
       {file.status === 'parsing' && (
-        <div className="flex w-40 shrink-0 flex-col gap-1.5" aria-live="polite">
+        <div className="order-last flex w-full flex-col gap-1.5 pl-[3.125rem] sm:order-none sm:w-40 sm:shrink-0 sm:pl-0" aria-live="polite">
           <p className="truncate text-label text-muted">{file.progress_label ?? 'Reading pages…'}</p>
-          <div className="h-1 overflow-hidden rounded-[2px] bg-surface-muted">
-            <div className="h-1 w-2/3 animate-pulse rounded-[2px] bg-accent" />
+          <div className="h-1 overflow-hidden rounded-pill bg-surface-hover" role="progressbar" aria-label={`Reading ${file.name}`}>
+            <div className="progress-indeterminate h-1 w-2/3 rounded-pill" />
           </div>
         </div>
       )}
       {confirming ? (
         <>
-          <Button variant="ghost" disabled={deleting} onClick={() => setConfirming(false)}>
-            Cancel
-          </Button>
-          <Button
-            variant="secondary"
-            Icon={Trash2}
-            disabled={deleting}
-            onClick={() => void remove()}
-            className="border-danger text-danger hover:bg-danger-soft"
-          >
-            {deleting ? 'Deleting…' : 'Delete'}
-          </Button>
+          <div className="ml-auto flex gap-1.5 pl-[3.125rem] sm:pl-0">
+            <Button variant="ghost" size="sm" disabled={deleting} onClick={() => setConfirming(false)}>
+              Cancel
+            </Button>
+            <Button variant="danger" size="sm" Icon={Trash2} loading={deleting} onClick={() => void remove()}>
+              {deleting ? 'Deleting…' : 'Delete'}
+            </Button>
+          </div>
         </>
       ) : (
-        <>
+        <div className="flex items-center gap-1 pl-[3.125rem] sm:gap-1.5 sm:pl-0">
           <StatusBadge status={file.status} />
           {deletable && (
             <button
@@ -118,9 +114,9 @@ export function FileRow({ file, onOpen, onDelete, onCancel }: FileRowProps) {
               onClick={() => setConfirming(true)}
               title="Delete file"
               aria-label={`Delete ${file.name}`}
-              className="flex size-8 shrink-0 items-center justify-center rounded-control text-muted transition-colors hover:bg-danger-soft hover:text-danger"
+              className="flex size-8 shrink-0 items-center justify-center rounded-control text-subtle transition-colors hover:bg-danger-soft hover:text-danger"
             >
-              <Trash2 size={16} strokeWidth={1.75} />
+              <Trash2 size={16} strokeWidth={1.75} aria-hidden="true" />
             </button>
           )}
           {cancellable && (
@@ -130,12 +126,12 @@ export function FileRow({ file, onOpen, onDelete, onCancel }: FileRowProps) {
               disabled={cancelling}
               title="Cancel upload"
               aria-label={`Cancel upload of ${file.name}`}
-              className="flex size-8 shrink-0 items-center justify-center rounded-control text-muted transition-colors hover:bg-danger-soft hover:text-danger disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex size-8 shrink-0 items-center justify-center rounded-control text-subtle transition-colors hover:bg-danger-soft hover:text-danger disabled:cursor-not-allowed disabled:opacity-50"
             >
               <X size={16} strokeWidth={1.75} />
             </button>
           )}
-        </>
+        </div>
       )}
     </div>
   )

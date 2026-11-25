@@ -46,6 +46,7 @@ _SCRYPT_MAXMEM = 64 * 1024 * 1024
 THROTTLE_WINDOW = 15 * 60
 THROTTLE_PER_ACCOUNT = 5
 THROTTLE_PER_ADDRESS = 20
+THROTTLE_MAX_KEYS = 10_000  # bounds memory when someone tries many different emails
 
 _lock = threading.RLock()
 _failures: dict[str, list[float]] = {}
@@ -63,6 +64,15 @@ class AuthError(Exception):
 def enabled() -> bool:
     """PINPOINT_AUTH=off turns sign-in off (tests, a kiosk demo). It is on by default."""
     return os.getenv("PINPOINT_AUTH", "on").strip().lower() not in ("off", "0", "false", "no")
+
+
+def remote_setup_allowed() -> bool:
+    """The owner account is created from this computer only, unless PINPOINT_ALLOW_REMOTE_SETUP=1.
+
+    Otherwise, if the server were reachable on a network before anyone set it up, the first
+    stranger to open it could make themselves the owner.
+    """
+    return os.getenv("PINPOINT_ALLOW_REMOTE_SETUP", "").strip().lower() in ("1", "true", "yes", "on")
 
 
 def cookie_secure() -> bool:
@@ -325,6 +335,13 @@ def _throttle(address: str, email: str) -> None:
 def _record_failure(address: str, email: str) -> None:
     now = time.time()
     with _lock:
+        if len(_failures) >= THROTTLE_MAX_KEYS:
+            for key in list(_failures):
+                _recent(key, now)  # drops keys whose failures are all outside the window
+        if len(_failures) >= THROTTLE_MAX_KEYS:
+            # Still full: forget per-email keys first; per-address limits keep holding.
+            for key in [k for k in _failures if "|" in k][: THROTTLE_MAX_KEYS // 2]:
+                del _failures[key]
         for key in (f"{address}|{email}", address):
             _failures.setdefault(key, []).append(now)
 

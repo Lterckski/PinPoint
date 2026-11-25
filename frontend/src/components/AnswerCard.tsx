@@ -40,13 +40,15 @@ export function AnswerCard({ response, activeCitationId, onOpenCitation, onFollo
   }
 
   return (
-    <article className="flex w-full flex-col gap-[18px] rounded-card border border-border bg-surface px-6 py-[22px] shadow-subtle">
-      <header className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-muted">
-          <Check size={16} strokeWidth={2} className="text-success" />
+    <article className="animate-rise-in flex w-full flex-col gap-5 rounded-panel border border-border bg-surface px-5 py-5 shadow-card sm:px-6">
+      <header className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2 text-subtle">
+          <span className="flex size-5 items-center justify-center rounded-pill bg-success-soft">
+            <Check size={12} strokeWidth={2.5} className="text-success" aria-hidden="true" />
+          </span>
           <span className="text-eyebrow uppercase">{extractive ? 'Matching passages' : 'Answer'}</span>
         </div>
-        <span className="text-label text-muted">
+        <span className="tabular text-label text-subtle">
           {fileCount === 0
             ? 'From your notes'
             : `From ${fileCount} of ${response.searched_files} file${response.searched_files === 1 ? '' : 's'}`}
@@ -57,7 +59,7 @@ export function AnswerCard({ response, activeCitationId, onOpenCitation, onFollo
         <p className="-mt-2 text-small text-muted">{EXTRACTIVE_LABEL} The assistant is unavailable, so these are the closest passages.</p>
       )}
 
-      <div className={`flex flex-col gap-2.5 ${extractive ? 'font-serif text-doc text-text' : 'text-[16px] leading-[26px] text-text'}`}>
+      <div className={`flex flex-col gap-3 ${extractive ? 'font-serif text-doc text-text' : 'text-answer text-text'}`}>
         {groupItems(response.answer).map((group, g) => {
           const items = group.items.map(({ sentence, index }) => (
             <Fragment key={index}>
@@ -69,10 +71,13 @@ export function AnswerCard({ response, activeCitationId, onOpenCitation, onFollo
                     key={id}
                     type="button"
                     onClick={() => onOpenCitation(c)}
-                    aria-label={`Source ${c.number}`}
-                    className="ml-0.5 align-baseline font-sans text-label font-medium text-accent hover:text-accent-hover"
+                    aria-label={`Source ${c.number}: ${c.kind === 'note' ? 'note' : `${c.file_name}, page ${c.page}`}`}
+                    aria-pressed={c.id === activeCitationId}
+                    className={`relative ml-1 inline-flex h-[18px] min-w-[18px] -translate-y-px items-center justify-center rounded-[5px] px-1 align-middle font-sans text-[11px] leading-none font-semibold tabular-nums transition-colors before:absolute before:-inset-[5px] before:content-[''] ${
+                      c.id === activeCitationId ? 'bg-accent text-on-accent' : 'bg-accent-soft text-accent hover:bg-accent hover:text-on-accent'
+                    }`}
                   >
-                    [{c.number}]
+                    {c.number}
                   </button>
                 ) : null
               })}
@@ -110,8 +115,9 @@ export function AnswerCard({ response, activeCitationId, onOpenCitation, onFollo
         })}
       </div>
 
-      <p className="text-eyebrow text-muted uppercase">Sources</p>
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-col gap-3 border-t border-border pt-4">
+      <p className="text-eyebrow text-subtle uppercase">Sources</p>
+      <div className="grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
         {response.citations.map((c) => (
           <CitationCard
             key={c.id}
@@ -122,18 +128,19 @@ export function AnswerCard({ response, activeCitationId, onOpenCitation, onFollo
           />
         ))}
       </div>
+      </div>
 
-      <div className="flex gap-1">
-        <Button variant="ghost" Icon={copied ? Check : Copy} onClick={copy}>
+      <div className="-mx-2 -mb-1 flex flex-wrap gap-1">
+        <Button variant="ghost" size="sm" Icon={copied ? Check : Copy} onClick={copy}>
           {copied ? 'Copied' : 'Copy answer'}
         </Button>
         {onToggleSave && (
-          <Button variant="ghost" Icon={saved ? BookmarkCheck : Bookmark} onClick={onToggleSave} aria-pressed={saved}>
+          <Button variant="ghost" size="sm" Icon={saved ? BookmarkCheck : Bookmark} onClick={onToggleSave} aria-pressed={saved}>
             {saved ? 'Saved' : 'Save'}
           </Button>
         )}
         {onFollowUp && (
-          <Button variant="ghost" Icon={CornerDownRight} onClick={onFollowUp}>
+          <Button variant="ghost" size="sm" Icon={CornerDownRight} onClick={onFollowUp}>
             Ask a follow-up
           </Button>
         )}

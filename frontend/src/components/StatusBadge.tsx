@@ -10,5 +10,5 @@ const STYLES: Record<FileStatus, { label: string; tag: string }> = {
 // Status tag: Ready, Reading, Queued, Failed. The words carry the state; color only confirms it.
 export function StatusBadge({ status, label }: { status: FileStatus; label?: string }) {
   const s = STYLES[status]
-  return <span className={`inline-flex h-[22px] shrink-0 items-center rounded-sm px-2 text-label ${s.tag}`}>{label ?? s.label}</span>
+  return <span className={`inline-flex h-6 shrink-0 items-center rounded-pill px-2.5 text-label ${s.tag}`}>{label ?? s.label}</span>
 }

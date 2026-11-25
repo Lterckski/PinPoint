@@ -79,13 +79,15 @@ export function WorkspacesPage() {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-10">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="flex flex-col gap-1">
-          <p className="text-small text-muted">{greeting()}{firstName ? `, ${firstName}` : ''}</p>
-          <h1 className="text-h1 text-text">Workspaces</h1>
-          <p className="tabular text-small text-subtle">
-            {workspaces.length} client{workspaces.length === 1 ? '' : 's'}, {totalFiles} file{totalFiles === 1 ? '' : 's'}
+        <div className="flex flex-col gap-2">
+          <h1 className="text-h1 text-text">
+            {greeting()}
+            {firstName ? `, ${firstName}` : ''}
+          </h1>
+          <p className="tabular text-body text-muted">
+            {workspaces.length} client workspace{workspaces.length === 1 ? '' : 's'}, {totalFiles} file{totalFiles === 1 ? '' : 's'} in all
           </p>
         </div>
         <Button Icon={Plus} onClick={() => setCreating(true)} className="self-start sm:self-auto">
@@ -128,7 +130,7 @@ export function WorkspacesPage() {
                 <li key={r.id}>
                   <Link
                     to={`/w/${r.workspaceId}/ask?h=${r.id}`}
-                    className="flex flex-col gap-1 px-4 py-3 transition-colors hover:bg-surface-muted sm:flex-row sm:items-center sm:gap-3"
+                    className="flex flex-col gap-1 px-5 py-3.5 transition-colors hover:bg-surface-muted sm:flex-row sm:items-center sm:gap-3"
                   >
                     <span className="flex min-w-0 flex-1 items-center gap-3">
                       <Clock size={16} strokeWidth={1.75} className="shrink-0 text-subtle" aria-hidden="true" />

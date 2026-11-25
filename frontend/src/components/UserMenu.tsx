@@ -37,7 +37,7 @@ export function UserMenu() {
 
   if (!user) return null
 
-  const item = 'flex h-9 w-full items-center gap-2.5 rounded-[6px] px-2.5 text-left text-body text-text hover:bg-surface-hover focus-visible:bg-surface-hover'
+  const item = 'flex h-10 w-full items-center gap-2.5 rounded-box px-3 text-left text-body text-text hover:bg-surface-hover focus-visible:bg-surface-hover'
 
   return (
     <div ref={ref} className="relative">
@@ -47,7 +47,7 @@ export function UserMenu() {
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center gap-2.5 rounded-control p-1.5 text-left transition-colors hover:bg-surface-hover"
+        className="flex w-full items-center gap-2.5 rounded-box p-1.5 text-left transition-colors hover:bg-surface-hover"
       >
         <Avatar name={user.name} />
         <span className="flex min-w-0 flex-1 flex-col">

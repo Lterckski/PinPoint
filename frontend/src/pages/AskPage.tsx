@@ -1,4 +1,4 @@
-import { Clock, CornerDownRight, FileUp, Loader2, MessageSquareText, Plus, Search, Upload } from 'lucide-react'
+import { Clock, CornerDownRight, FileUp, Loader2, Plus, Search, Upload } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { AnswerCard } from '../components/AnswerCard'
@@ -148,7 +148,7 @@ export function AskPage() {
   const last = turns.length - 1
 
   return (
-    <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_280px]">
+    <div className="mx-auto flex w-full max-w-[760px] flex-col">
       <div className="flex min-w-0 flex-col gap-4">
         {turns.length === 0 && !loading && (
           fileCount === 0 && workspace ? (
@@ -164,11 +164,11 @@ export function AskPage() {
               {workspace.name} has no files yet. Upload PDFs, scans or photos, and you can ask about them here.
             </EmptyState>
           ) : (
-            <div className="animate-fade-in flex flex-col items-start gap-2 pt-2 pb-1">
-              <h2 className="text-h1 text-text sm:text-[30px] sm:leading-[36px]">
+            <div className="animate-fade-in flex flex-col items-center gap-3 pt-6 pb-4 text-center sm:pt-16">
+              <h2 className="text-h1 text-text sm:text-[40px] sm:leading-[44px] sm:tracking-[-0.035em]">
                 What do you need to find?
               </h2>
-              <p className="text-body text-muted">
+              <p className="max-w-[46ch] text-body text-muted sm:text-[15px] sm:leading-6">
                 Ask about the {fileCount} file{fileCount === 1 ? '' : 's'} in {workspace?.name ?? 'this workspace'} in plain words. Every
                 answer shows exactly where it came from.
               </p>
@@ -178,8 +178,7 @@ export function AskPage() {
         {turns.map((turn, i) => (
           <div key={`${turn.historyId ?? i}`} className="flex flex-col gap-3.5">
             {turn.question && (
-              <p className="flex items-start gap-2 text-h2 text-text">
-                {i > 0 && <CornerDownRight size={18} strokeWidth={1.75} className="mt-1 shrink-0 text-subtle" aria-hidden="true" />}
+              <p className="animate-rise-in max-w-[85%] self-end rounded-card rounded-br-[6px] border border-border bg-surface px-4.5 lg:border-transparent lg:bg-surface-muted py-3 text-answer font-medium text-text">
                 {turn.question}
               </p>
             )}
@@ -191,7 +190,7 @@ export function AskPage() {
               />
             ) : turn.response ? (
               <>
-                <p className="tabular -mt-2 text-label text-subtle">
+                <p className="tabular pl-1 text-label text-subtle">
                   Searched {turn.response.searched_files} file{turn.response.searched_files === 1 ? '' : 's'} in{' '}
                   {formatSeconds(turn.response.elapsed_ms)}
                 </p>
@@ -227,7 +226,7 @@ export function AskPage() {
         {loading && <LoadingCard fileCount={fileCount} />}
 
         {followingUp && turns.length > 0 && (
-          <div className="flex items-center justify-between gap-3 rounded-control border border-accent-border bg-accent-soft py-1 pr-1 pl-3.5">
+          <div className="flex items-center justify-between gap-3 rounded-control bg-accent-soft py-1 pr-1 pl-4">
             <p className="flex min-w-0 items-center gap-2 text-small text-accent">
               <CornerDownRight size={14} strokeWidth={1.75} className="shrink-0" />
               <span className="truncate">Following up on: {turns[last].question}</span>
@@ -257,31 +256,27 @@ export function AskPage() {
         <div ref={bottomRef} />
       </div>
 
-      <aside className="flex flex-col gap-1 border-t border-border pt-6 xl:sticky xl:top-8 xl:border-t-0 xl:border-l xl:pt-0 xl:pl-6" aria-labelledby="ask-recent">
-        <h2 id="ask-recent" className="flex items-center gap-2 pb-2 text-h3 text-text">
-          <MessageSquareText size={16} strokeWidth={1.75} className="text-subtle" aria-hidden="true" />
-          Recent questions
-        </h2>
-        {recent.length === 0 ? (
-          <p className="text-small text-subtle">Questions you ask in this workspace show up here.</p>
-        ) : (
-          recent.map((r) => (
-            <button
-              key={r.id}
-              type="button"
-              onClick={() => setParams({ h: r.id })}
-              aria-current={params.get('h') === r.id ? 'true' : undefined}
-              className="-mx-2.5 flex items-start gap-2.5 rounded-control p-2.5 text-left transition-colors hover:bg-surface-hover aria-[current=true]:bg-accent-soft"
-            >
-              <Clock size={15} strokeWidth={1.75} className="mt-0.5 shrink-0 text-subtle" aria-hidden="true" />
-              <span className="flex min-w-0 flex-col gap-0.5">
-                <span className="line-clamp-2 text-small text-text">{r.question}</span>
-                <span className="text-label text-subtle">{dayLabel(r.created_at)}</span>
-              </span>
-            </button>
-          ))
-        )}
-      </aside>
+      {turns.length === 0 && !loading && recent.length > 0 && (
+        <section className="animate-fade-in mt-8 flex flex-col items-center gap-3" aria-labelledby="ask-recent">
+          <h2 id="ask-recent" className="text-label text-subtle">
+            Recent questions
+          </h2>
+          <div className="stagger flex flex-wrap justify-center gap-2">
+            {recent.slice(0, 6).map((r) => (
+              <button
+                key={r.id}
+                type="button"
+                onClick={() => setParams({ h: r.id })}
+                title={`Asked ${dayLabel(r.created_at)}`}
+                className="press lift flex max-w-full items-center gap-2 rounded-pill border border-border bg-surface px-4 py-2 text-small text-text transition-[border-color,background-color] hover:border-border-strong hover:bg-surface-muted"
+              >
+                <Clock size={14} strokeWidth={1.75} className="shrink-0 text-subtle" aria-hidden="true" />
+                <span className="truncate">{r.question}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
 
       {open && turns[open.turn]?.response && (
         <CitationPanel
@@ -360,7 +355,7 @@ function NotFoundCard({
           type="button"
           onClick={() => onSuggestion(suggestion.question)}
           title={suggestion.question}
-          className="flex items-center gap-2 self-start rounded-control border border-accent-border bg-accent-soft px-3.5 py-2 text-left text-body font-medium text-accent transition-colors hover:bg-accent hover:text-on-accent"
+          className="press flex items-center gap-2 self-start rounded-control bg-accent-soft px-4 py-2 text-left text-body font-medium text-accent transition-colors hover:bg-accent hover:text-on-accent"
         >
           <CornerDownRight size={16} strokeWidth={1.75} className="shrink-0" aria-hidden="true" />
           {suggestion.text}

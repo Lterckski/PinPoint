@@ -38,19 +38,19 @@ export function SegmentedTabs({ tabs, label }: { tabs: readonly SegmentedTab[]; 
     <nav
       ref={nav}
       aria-label={label}
-      className="no-scrollbar relative flex w-fit max-w-full gap-0.5 overflow-x-auto rounded-[10px] bg-surface-muted p-1"
+      className="no-scrollbar relative flex w-fit max-w-full gap-0.5 overflow-x-auto rounded-pill bg-surface-muted p-1"
     >
       <span
         ref={thumb}
         aria-hidden="true"
-        className="pointer-events-none absolute top-1 bottom-1 left-0 w-[100px] origin-left rounded-[7px] bg-surface opacity-0 shadow-subtle ease-out dark:bg-surface-hover"
+        className="pointer-events-none absolute top-1 bottom-1 left-0 w-[100px] origin-left rounded-pill bg-surface opacity-0 shadow-subtle ease-out dark:bg-surface-hover"
       />
       {tabs.map((tab) => (
         <NavLink
           key={tab.to}
           to={tab.to}
           className={({ isActive }) =>
-            `press relative flex h-8 shrink-0 items-center gap-2 rounded-[7px] px-3 text-body font-medium ${
+            `press relative flex h-9 shrink-0 items-center gap-2 rounded-pill px-4 text-body font-medium ${
               isActive ? 'text-text' : 'text-muted hover:text-text'
             }`
           }

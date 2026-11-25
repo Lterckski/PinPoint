@@ -67,7 +67,7 @@
   --red-900: #341816;
 
   /* Semantic tokens: light */
-  --background: var(--gray-25);
+  --background: var(--gray-50);
   --surface1: var(--gray-0);
   --surface2: var(--gray-50);
   --surface3: var(--gray-75);
@@ -91,17 +91,18 @@
   --warning-bg: var(--amber-50);
   --error: var(--red-700);
   --error-bg: var(--red-50);
-  --band: var(--gray-50);
-  --on-band: var(--gray-900);
-  --on-band-muted: var(--gray-600);
-  --band-border: var(--gray-200);
+  --band: var(--gray-900);
+  --on-band: var(--night-50);
+  --on-band-muted: var(--night-200);
+  --band-border: var(--night-700);
   --scrim: rgb(17 17 19 / 0.32);
   --shadow-color: 17 17 19;
   --shadow-strength: 1;
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-full: 999px;
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -185,9 +186,11 @@
   --color-on-band-muted: var(--on-band-muted);
   --color-band-border: var(--band-border);
 
-  --radius-control: var(--radius-sm);
-  --radius-card: var(--radius-md);
-  --radius-panel: var(--radius-lg);
+  /* Soft and round: every control is a pill, every surface a large rounded panel. */
+  --radius-control: var(--radius-full);
+  --radius-box: var(--radius-md);
+  --radius-card: var(--radius-lg);
+  --radius-panel: var(--radius-xl);
   --radius-pill: var(--radius-full);
 
   /* Elevation: soft. Resting cards get a whisper of shadow; floating layers a real one.
@@ -218,9 +221,9 @@
   --text-section--line-height: 1.12;
   --text-section--letter-spacing: -0.03em;
   --text-section--font-weight: 500;
-  --text-h1: 26px;
-  --text-h1--line-height: 32px;
-  --text-h1--letter-spacing: -0.025em;
+  --text-h1: 30px;
+  --text-h1--line-height: 36px;
+  --text-h1--letter-spacing: -0.03em;
   --text-h1--font-weight: 600;
   --text-h2: 18px;
   --text-h2--line-height: 26px;

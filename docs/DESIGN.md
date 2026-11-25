@@ -1,10 +1,10 @@
-# PinPoint design system: "Quiet"
+# PinPoint design system: "Quiet" (soft layout)
 
 Code: `frontend/src/index.css` (tokens), `frontend/src/components/` (components).
 The original Figma file (dEpoBVGwqEwzOmYaKJC750) is reference only; this document wins where they differ.
 
 ## Philosophy
-PinPoint is used by law offices and accounting firms to answer questions from client files. It should feel calm, clean and considered: white paper, black ink, generous space, and soft motion that confirms every action without getting in the way. The interface is monochrome on purpose, so the only color on screen is the yellow mark on a cited passage (the proof) and the occasional status. No gradients, sparkles, glass, cream-and-serif styling, or decorative labels.
+PinPoint is used by law offices and accounting firms to answer questions from client files. It should feel calm, clean and considered: white panels floating on a light gray canvas, black ink, pill-shaped controls, large rounded corners, generous space, and soft motion that confirms every action without getting in the way. The interface is monochrome on purpose, so the only color on screen is the yellow mark on a cited passage (the proof) and the occasional status. No gradients, sparkles, glass, cream-and-serif styling, or decorative labels.
 
 The design follows the reference skills the team chose: interface-design (one focal point per view, hierarchy from weight and color before size), hallmark (no eyebrows, no dot-joined meta strings, no invented facts, real product screenshots instead of drawn mockups), hueapp (two-tier tokens), and Apple's HIG with Emil Kowalski's motion notes (ease-out, transform and opacity only, press feedback, reduced motion honoured).
 
@@ -69,26 +69,28 @@ Geist for everything, Geist Mono for file paths. Document text (quoted passages,
 Counts and figures use `.tabular`. Headings use `text-wrap: balance`, paragraphs `pretty`. Phones get 16px form text so iOS never zooms.
 
 ## Space, radius, elevation, motion
-- 4/8px grid. Page gutters 16px (phone), 24px (sm), 40–48px (desktop); content max 1280px.
-- Radius: 8px controls (`rounded-control`), 12px tables and cards (`rounded-card`), 16px panels, dialogs and the ask box (`rounded-panel`), pills for small counts (`rounded-pill`).
+- 4/8px grid. Page gutters 16px (phone), 24px (sm), 48px (desktop); content max 1120px; the Ask column max 760px, centered.
+- Layout: on desktop the sidebar sits directly on the gray canvas and each page lives in one large white rounded panel inset 8px from the window edges. The landing page is a stack of rounded tiles on the same canvas under a floating pill header. Phones drop the panel and put content straight on the canvas.
+- Radius: every control is a pill (`rounded-control`, `rounded-pill`): buttons, inputs, tabs, tags, sidebar items, the ask box. 14px for small boxes such as alerts and notes (`rounded-box`), 20px for cards, tables and tiles (`rounded-card`), 28px for the app panel, dialogs, the answer and the citation panel (`rounded-panel`).
 - Elevation: soft. Resting cards and tables get a whisper of shadow (`shadow-subtle`); `shadow-card` on hover and for the answer; `shadow-panel` for things that float (menus, dialogs, the citation panel, landing screenshots). Dark mode drops resting shadows.
 - Motion (index.css, "Motion"): ease-out `cubic-bezier(0.23,1,0.32,1)`, 140 to 420ms, transform and opacity only, no bounce. Every button eases its colors on hover and dips to 97% when pressed (`.press`). Pages and workspace tabs rise 10px and fade in (`.animate-page`, keyed on the route). Lists cascade in 40ms apart (`.stagger`). Dialogs scale in from 97% (bottom sheets slide up on phones); the citation panel slides in from the right. The workspace tabs are a segmented control whose thumb slides between tabs. Landing sections rise in as they scroll into view (`.reveal`, only hidden once JavaScript is running). Animations use fill-mode `backwards` so a finished animation never traps fixed panels. `prefers-reduced-motion` turns all of it off.
 
 ## Components
 | Component | Variants and rules |
 |---|---|
-| Button | primary, secondary, ghost, danger × sm (32), md (36), lg (44). `loading` shows a spinner and blocks clicks. Icon left, 16px, 1.75 stroke. |
-| IconButton | Icon-only, required `label` (aria-label + tooltip). 32 or 36px. `tone="danger"` for delete. |
-| Field / PasswordField | Visible label, 40px input on `border-input`, soft accent glow on focus, hint or error under it wired with aria-describedby. Password fields have show/hide and allow paste. |
+| Button | Pill-shaped. primary, secondary, ghost, danger × sm (32), md (40), lg (48). `loading` shows a spinner and blocks clicks. Icon left, 16px, 1.75 stroke. |
+| IconButton | Icon-only, required `label` (aria-label + tooltip). Round, 32 or 36px. `tone="danger"` for delete. |
+| Field / PasswordField | Visible label, 44px pill input on `border-input`, soft accent glow on focus, hint or error under it wired with aria-describedby. Password fields have show/hide and allow paste. |
 | States | `Skeleton`, `EmptyState` (icon, title, one action), `ErrorState` (message + Try again). |
-| Segmented Tabs | A workspace's Ask, Files and Memory: a gray track with a white thumb that slides to the active tab. |
-| Sidebar / SidebarItem | 256px, same white as the content, one border. Workspaces, Settings, Clients list with file counts and a + for new workspace, theme toggle, user menu. Becomes a drawer below 1024px. |
+| Segmented Tabs | A workspace's Ask, Files and Memory: a gray pill track with a white pill thumb that slides to the active tab. |
+| Sidebar / SidebarItem | 240px on the canvas, no border. The active item is a raised white pill. Workspaces, Settings, Clients list with file counts and a + for new workspace, dark mode switch, user menu. Becomes a drawer below 1024px. |
+| Theme Switch | A pill switch (`role="switch"`): ink track, white knob that slides right for dark mode, the other theme's icon in the empty half. Sidebar and landing header. Settings keeps the three-way Light, Dark, System control. |
 | UserMenu, Avatar | Name and email; Settings, Sign out. |
 | Workspace Table | The client register: industry icon, name (a link stretched over the row), industry, files (right-aligned figures), last updated. Delete appears on hover/focus with a pointer, always visible on touch. Rows stack on phones. |
 | File Row | Inside one bordered list. Type icon, name (opens the viewer), meta, status tag (Ready, Reading, Queued, Failed; words first, no dots), actions. Wraps on phones. |
-| Search Input (Ask box) | 16px-radius panel, accent ring on focus, Ask button (an arrow on phones). |
+| Search Input (Ask box) | A pill with a lifted shadow on focus and a pill Ask button (an arrow on phones). On an empty workspace it sits under a centered "What do you need to find?" with recent questions as pills below. The asked question shows as a bubble on the right. |
 | Answer Card | "Answer" label, answer text with numbered source chips (filled when open), sources grid, Copy / Save / Follow-up. |
-| Citation Card / Panel | Crop on top, number chip, file and page. Panel slides in from the right (full width on phones) with the marker-highlighted passage and sticky actions. |
+| Citation Card / Panel | Crop on top, number chip, file and page. Panel slides in from the right as a floating rounded panel (full width on phones) with the marker-highlighted passage and sticky actions. |
 | Dialogs | Centered on desktop, bottom sheet on phones; Escape closes, focus returns to the opener. |
 
 ## Screens
@@ -106,7 +108,7 @@ Landing (`/`, `/welcome`), Sign in / first-run setup (`/signin`), Workspaces (`/
 - No icon-only button without a label.
 - No placeholder-as-label in forms.
 - No spinners for content that has a shape; use a skeleton.
-- No border-radius above 16px except pills.
+- No sharp corners on controls; no radius above 28px except pills.
 - No emoji or sparkle icons; Lucide only, 1.75 stroke.
 - No drawn product mockups on the landing page; use real screenshots (frontend/src/assets/landing, captured from the app in mock mode).
 - No invented numbers, quotes or logos.

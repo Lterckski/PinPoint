@@ -12,9 +12,9 @@ const VARIANTS: Record<Variant, string> = {
 }
 
 const SIZES: Record<Size, string> = {
-  sm: 'h-8 gap-1.5 px-3 text-small',
-  md: 'h-9 gap-2 px-3.5 text-body',
-  lg: 'h-11 gap-2 px-5 text-body',
+  sm: 'h-8 gap-1.5 px-3.5 text-small',
+  md: 'h-10 gap-2 px-4.5 text-body',
+  lg: 'h-12 gap-2 px-6 text-body',
 }
 
 type ButtonProps = ComponentProps<'button'> & {
@@ -42,7 +42,7 @@ export function Button({
       type={type}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
-      className={`inline-flex shrink-0 items-center justify-center rounded-control font-medium whitespace-nowrap press select-none disabled:pointer-events-none disabled:opacity-50 ${SIZES[size]} ${VARIANTS[variant]} ${Icon || loading ? (size === 'sm' ? 'pl-2.5' : 'pl-3') : ''} ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center rounded-control font-medium whitespace-nowrap press select-none disabled:pointer-events-none disabled:opacity-50 ${SIZES[size]} ${VARIANTS[variant]} ${Icon || loading ? (size === 'sm' ? 'pl-3' : 'pl-3.5') : ''} ${className}`}
       {...rest}
     >
       {loading ? (

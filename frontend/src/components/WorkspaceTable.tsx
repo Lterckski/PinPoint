@@ -33,9 +33,9 @@ const COLS = 'grid-cols-[minmax(0,1fr)_auto] md:grid-cols-[minmax(0,2.2fr)_minma
 export function WorkspaceTable({ workspaces, loading = false, linkTo, onDelete }: WorkspaceTableProps) {
   const cols = onDelete ? COLS_WITH_DELETE : COLS
   return (
-    <div className="overflow-hidden rounded-card border border-border bg-surface shadow-subtle">
+    <div className="overflow-hidden rounded-card border border-border bg-surface shadow-subtle lg:overflow-visible lg:rounded-none lg:border-0 lg:bg-transparent lg:shadow-none">
       <div role="table" aria-label="Client workspaces" aria-busy={loading || undefined}>
-        <div role="rowgroup" className="hidden border-b border-border md:block">
+        <div role="rowgroup" className="hidden border-b border-border md:block lg:mb-1">
           <div role="row" className={`grid ${cols} items-center gap-4 px-5 py-2.5 text-label text-subtle`}>
             <span role="columnheader">Client</span>
             <span role="columnheader">Industry</span>
@@ -50,7 +50,7 @@ export function WorkspaceTable({ workspaces, loading = false, linkTo, onDelete }
             )}
           </div>
         </div>
-        <div role="rowgroup" className="stagger divide-y divide-border">
+        <div role="rowgroup" className="stagger divide-y divide-border lg:flex lg:flex-col lg:gap-0.5 lg:divide-y-0">
           {loading && !workspaces.length
             ? [0, 1, 2].map((i) => (
                 <div key={i} className="flex items-center gap-3 px-4 py-3.5">
@@ -62,10 +62,10 @@ export function WorkspaceTable({ workspaces, loading = false, linkTo, onDelete }
                 <div
                   key={w.id}
                   role="row"
-                  className={`group relative grid ${cols} items-center gap-x-4 px-5 py-3.5 transition-colors duration-150 hover:bg-surface-muted`}
+                  className={`group relative grid ${cols} items-center gap-x-4 px-5 py-3.5 transition-colors duration-150 hover:bg-surface-muted lg:rounded-box`}
                 >
                   <span role="cell" className="flex min-w-0 items-center gap-3">
-                    <span className="flex size-8 shrink-0 items-center justify-center rounded-control bg-surface-muted text-muted transition-colors duration-150 group-hover:bg-surface group-hover:text-text">
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-pill bg-surface-muted text-muted transition-colors duration-150 group-hover:bg-surface group-hover:text-text">
                       <IndustryIcon industry={w.industry} />
                     </span>
                     <span className="flex min-w-0 flex-col">

@@ -106,7 +106,7 @@ export function ConnectFolderDialog({ onConnect, onClose }: ConnectFolderDialogP
           </p>
         </div>
 
-        <p className="flex gap-2.5 rounded-control bg-surface-muted px-3.5 py-3 text-small text-muted">
+        <p className="flex gap-2.5 rounded-box bg-surface-muted px-3.5 py-3 text-small text-muted">
           <ShieldCheck size={16} strokeWidth={1.75} className="mt-0.5 shrink-0 text-success" />
           PinPoint reads this folder on this computer. It never changes or deletes your files.
         </p>

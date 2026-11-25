@@ -46,7 +46,7 @@ export function CitationPanel({ citation, total, onClose, onOpenDocument }: Cita
     <aside
       role="dialog"
       aria-label={`Source ${citation.number} of ${total}`}
-      className="animate-slide-in-right fixed inset-y-0 right-0 z-30 flex w-full flex-col gap-[18px] overflow-y-auto overscroll-contain border-l border-border bg-surface p-5 shadow-panel sm:w-[560px] sm:p-6"
+      className="animate-slide-in-right fixed inset-y-0 right-0 z-30 flex w-full flex-col gap-[18px] overflow-y-auto overscroll-contain border-l border-border bg-surface p-5 shadow-panel sm:inset-y-2 sm:right-2 sm:w-[560px] sm:rounded-panel sm:border sm:p-7"
     >
       <header className="flex items-center justify-between">
         <h2 className="text-h3 text-text">

@@ -20,7 +20,7 @@ export function Field({ label, hint, error, trailing, labelAside, className = ''
   return (
     <div className={`flex flex-col gap-1.5 ${className}`}>
       <div className="flex items-baseline justify-between gap-3">
-        <label htmlFor={inputId} className="text-label text-text">
+        <label htmlFor={inputId} className="pl-1 text-label text-text">
           {label}
         </label>
         {labelAside}
@@ -30,12 +30,12 @@ export function Field({ label, hint, error, trailing, labelAside, className = ''
           id={inputId}
           aria-invalid={error ? true : undefined}
           aria-describedby={note ? noteId : undefined}
-          className={`h-10 w-full rounded-control border bg-surface px-3 text-body text-text shadow-subtle transition-[border-color,box-shadow] duration-150 placeholder:text-subtle focus:outline-none focus-visible:outline-none focus:ring-3 disabled:opacity-60 ${
-            error ? 'border-danger focus:ring-danger/20' : 'border-input focus:border-accent focus:ring-accent/20'
-          } ${trailing ? 'pr-11' : ''}`}
+          className={`h-11 w-full rounded-control border bg-surface px-4 text-body text-text shadow-subtle transition-[border-color,box-shadow] duration-150 placeholder:text-subtle focus:outline-none focus-visible:outline-none focus:ring-3 disabled:opacity-60 ${
+            error ? 'border-danger focus:ring-danger/20' : 'border-input focus:border-accent focus:ring-accent/10'
+          } ${trailing ? 'pr-12' : ''}`}
           {...rest}
         />
-        {trailing && <div className="absolute inset-y-0 right-1 flex items-center">{trailing}</div>}
+        {trailing && <div className="absolute inset-y-0 right-1.5 flex items-center">{trailing}</div>}
       </div>
       {note && (
         <p id={noteId} className={`text-small ${error ? 'text-danger' : 'text-subtle'}`} role={error ? 'alert' : undefined}>

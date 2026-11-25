@@ -28,13 +28,13 @@ export function SignInPage() {
         <Link to="/" aria-label="PinPoint home" className="rounded-control">
           <Logo size={24} />
         </Link>
-        <Link to="/" className="inline-flex items-center gap-1.5 rounded-control px-2 py-1 text-small text-muted hover:text-text">
+        <Link to="/" className="press inline-flex h-9 items-center gap-1.5 rounded-control border border-border bg-surface px-3.5 text-small text-muted hover:text-text">
           <ArrowLeft size={14} strokeWidth={1.75} aria-hidden="true" />
           Home
         </Link>
       </div>
       <main id="main" className="flex flex-1 items-center justify-center py-10">
-        <div className="animate-rise-in w-full max-w-[400px] rounded-card border border-border bg-surface p-6 sm:p-8">
+        <div className="animate-rise-in w-full max-w-[420px] rounded-panel border border-border bg-surface p-7 shadow-card sm:p-10">
           {status === 'setup' ? <SetupForm onSubmit={setup} /> : <SignInForm onSubmit={signIn} />}
         </div>
       </main>
@@ -85,7 +85,7 @@ function SignInForm({ onSubmit }: { onSubmit: (email: string, password: string) 
         <p className="text-body text-muted">Use the account set up on this computer.</p>
       </div>
       {USE_MOCKS && (
-        <p className="rounded-control border border-accent-border bg-accent-soft px-3 py-2 text-small text-accent">
+        <p className="rounded-box border border-accent-border bg-accent-soft px-3 py-2 text-small text-accent">
           Demo mode: any email and a password of {PASSWORD_MIN}+ characters.
         </p>
       )}
@@ -115,7 +115,7 @@ function SignInForm({ onSubmit }: { onSubmit: (email: string, password: string) 
         />
       </div>
       {error && (
-        <p role="alert" className="-mt-2 rounded-control border border-danger/25 bg-danger-soft px-3 py-2 text-small text-danger">
+        <p role="alert" className="-mt-2 rounded-box border border-danger/25 bg-danger-soft px-3 py-2 text-small text-danger">
           {error}
         </p>
       )}
@@ -227,7 +227,7 @@ function SetupForm({ onSubmit }: { onSubmit: (name: string, email: string, passw
         />
       </div>
       {errors.form && (
-        <p role="alert" className="-mt-2 rounded-control border border-danger/25 bg-danger-soft px-3 py-2 text-small text-danger">
+        <p role="alert" className="-mt-2 rounded-box border border-danger/25 bg-danger-soft px-3 py-2 text-small text-danger">
           {errors.form}
         </p>
       )}

@@ -173,7 +173,7 @@ export function DocumentViewer({ ws, file, onClose }: DocumentViewerProps) {
                   >
                     <h2 className="text-label text-muted">Page {p.page}</h2>
                     {p.blocks.map((b, i) => (
-                      <div key={i} className={b.locator === target?.locator ? 'rounded-control ring-2 ring-accent' : ''}>
+                      <div key={i} className={b.locator === target?.locator ? 'rounded-box ring-2 ring-accent' : ''}>
                         <BlockText text={b.text} table={b.table} />
                       </div>
                     ))}
@@ -288,7 +288,7 @@ function AskAboutDocument({ ws, file, onCitation }: { ws: string; file: ViewerFi
                 <button
                   type="button"
                   onClick={() => onCitation(c.page, c.locator)}
-                  className="flex w-full items-start gap-2 rounded-control border border-border p-2.5 text-left hover:border-accent"
+                  className="flex w-full items-start gap-2 rounded-box border border-border p-2.5 text-left hover:border-accent"
                 >
                   <span className="flex size-[18px] shrink-0 items-center justify-center rounded-pill bg-accent-soft text-label text-accent">{c.number}</span>
                   <span className="flex min-w-0 flex-col gap-0.5">
@@ -302,7 +302,7 @@ function AskAboutDocument({ ws, file, onCitation }: { ws: string; file: ViewerFi
         </div>
       )}
       {result && !busy && result.status === 'not_found' && (
-        <div className="flex flex-col gap-2 rounded-control bg-surface-muted p-3">
+        <div className="flex flex-col gap-2 rounded-box bg-surface-muted p-3">
           <p className="text-small font-medium text-text">Not found in this document</p>
           <p className="text-small text-text">{result.reason}</p>
           {result.suggestion && (
@@ -341,7 +341,7 @@ function IconButton({
       title={label}
       aria-pressed={pressed}
       data-autofocus={autoFocus ? '' : undefined}
-      className={`flex size-8 items-center justify-center rounded-[6px] text-muted hover:bg-surface-muted hover:text-text disabled:opacity-40 ${pressed ? 'bg-accent-soft text-accent' : ''}`}
+      className={`flex size-8 items-center justify-center rounded-pill text-muted hover:bg-surface-muted hover:text-text disabled:opacity-40 ${pressed ? 'bg-accent-soft text-accent' : ''}`}
     >
       {children}
     </button>

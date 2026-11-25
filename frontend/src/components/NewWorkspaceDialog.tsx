@@ -87,7 +87,7 @@ export function NewWorkspaceDialog({ onCreate, onClose }: NewWorkspaceDialogProp
             id={industryId}
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
-            className="h-10 w-full rounded-control border border-input bg-surface px-3 text-body text-text shadow-subtle focus:border-accent focus:ring-3 focus:ring-accent/20 focus:outline-none focus-visible:outline-none"
+            className="h-11 w-full rounded-control border border-input bg-surface px-4 text-body text-text shadow-subtle focus:border-accent focus:ring-3 focus:ring-accent/20 focus:outline-none focus-visible:outline-none"
           >
             {INDUSTRIES.map((i) => (
               <option key={i}>{i}</option>

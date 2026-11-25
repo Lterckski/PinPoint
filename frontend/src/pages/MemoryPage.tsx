@@ -89,7 +89,7 @@ function NotesSection({ ws }: { ws: string }) {
           maxLength={4000}
           placeholder="Remember something about this client…"
           aria-label="New note"
-          className="w-full resize-y rounded-control border border-input bg-surface px-3 py-2.5 text-body text-text transition-[border-color,box-shadow] placeholder:text-subtle focus:border-accent focus:ring-3 focus:ring-accent/20 focus:outline-none focus-visible:outline-none"
+          className="w-full resize-y rounded-box border border-input bg-surface px-3 py-2.5 text-body text-text transition-[border-color,box-shadow] placeholder:text-subtle focus:border-accent focus:ring-3 focus:ring-accent/20 focus:outline-none focus-visible:outline-none"
         />
         <div className="flex items-center justify-between gap-3">
           <span className="hidden text-label text-subtle sm:inline">

@@ -8,8 +8,9 @@ import { Logo } from './Logo'
 import { Sidebar } from './Sidebar'
 import { WorkspacesProvider } from './WorkspacesProvider'
 
-// App shell. Desktop (lg, 1024px+): a 256px sidebar beside the page. Smaller screens: a top bar
-// whose menu button opens the same sidebar as a drawer.
+// App shell. Desktop (lg, 1024px+): the sidebar sits on the canvas and the page floats beside it
+// in one large rounded panel. Smaller screens: a top bar whose menu button opens the same sidebar
+// as a drawer, and the page sits straight on the canvas.
 export function AppShell() {
   const { user } = useAuth()
   const { pathname } = useLocation()
@@ -62,8 +63,8 @@ export function AppShell() {
           <Sidebar />
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-border bg-surface/90 px-2 backdrop-blur-md lg:hidden">
+        <div className="flex min-w-0 flex-1 flex-col lg:py-2 lg:pr-2">
+          <header className="sticky top-0 z-20 flex h-14 items-center gap-2 bg-bg/85 px-2 backdrop-blur-md lg:hidden">
             <IconButton
               ref={menuButton}
               Icon={Menu}
@@ -83,9 +84,13 @@ export function AppShell() {
             )}
           </header>
 
-          <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1280px] min-w-0 flex-1 px-4 pt-5 pb-16 focus:outline-none sm:px-6 lg:px-10 lg:pt-8 xl:px-12">
+          <main
+            id="main"
+            tabIndex={-1}
+            className="min-w-0 flex-1 focus:outline-none lg:rounded-panel lg:border lg:border-border lg:bg-surface lg:shadow-subtle"
+          >
             {/* Each page arrives with a short rise; a workspace's tabs animate inside it instead. */}
-            <div key={pageKey(pathname)} className="animate-page">
+            <div key={pageKey(pathname)} className="animate-page mx-auto w-full max-w-[1120px] px-4 pt-4 pb-16 sm:px-6 lg:px-12 lg:pt-12">
               <Outlet />
             </div>
           </main>
@@ -95,7 +100,7 @@ export function AppShell() {
       {drawerOpen && (
         <div className="fixed inset-0 z-40 lg:hidden" id="app-drawer">
           <div className="animate-fade-in absolute inset-0 bg-scrim" onClick={() => setDrawerOpen(false)} aria-hidden="true" />
-          <div ref={drawer} role="dialog" aria-modal="true" aria-label="Menu" className="animate-slide-in-left relative h-full w-[min(18rem,85vw)] shadow-panel">
+          <div ref={drawer} role="dialog" aria-modal="true" aria-label="Menu" className="animate-slide-in-left relative h-full w-[min(18rem,85vw)] rounded-r-panel bg-bg shadow-panel">
             <Sidebar onNavigate={() => setDrawerOpen(false)} className="w-full" />
             <IconButton Icon={X} label="Close menu" onClick={() => setDrawerOpen(false)} className="absolute top-3.5 right-3" />
           </div>

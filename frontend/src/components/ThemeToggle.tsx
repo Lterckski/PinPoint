@@ -24,7 +24,7 @@ export function ThemeToggle({ showLabels = false }: { showLabels?: boolean }) {
             aria-label={label}
             title={label}
             onClick={() => setChoice(value)}
-            className={`flex h-7 items-center justify-center gap-1.5 rounded-[6px] text-label ${
+            className={`flex h-7 items-center justify-center gap-1.5 rounded-pill text-label ${
               showLabels ? 'px-3' : 'w-7'
             } ${active ? 'bg-surface text-text shadow-subtle' : 'text-muted hover:text-text'}`}
           >

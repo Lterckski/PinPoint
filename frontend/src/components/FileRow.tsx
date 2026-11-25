@@ -77,7 +77,7 @@ export function FileRow({ file, onOpen, onDelete, onCancel }: FileRowProps) {
           <>
           <p className="tabular flex min-w-0 items-center gap-1.5 truncate text-small text-subtle">
             {file.source === 'folder' && (
-              <span className="rounded-[5px] border border-border px-1.5 text-label text-muted">Folder</span>
+              <span className="rounded-pill border border-border px-2 text-label text-muted">Folder</span>
             )}
             {fileMeta(file)}
           </p>

@@ -4,7 +4,7 @@ import { Button } from './Button'
 
 /** A shimmering placeholder block. Size it with className (height, width, radius). */
 export function Skeleton({ className = '' }: { className?: string }) {
-  return <div aria-hidden="true" className={`skeleton rounded-control ${className}`} />
+  return <div aria-hidden="true" className={`skeleton rounded-box ${className}`} />
 }
 
 type EmptyStateProps = {

@@ -217,11 +217,11 @@ export function FilesPage() {
         }}
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
-        className={`flex flex-col items-center gap-3 rounded-card border-2 border-dashed px-4 py-7 text-center transition-colors duration-150 sm:flex-row sm:gap-4 sm:px-6 sm:py-5 sm:text-left ${
-          dragging ? 'border-accent bg-accent-soft' : 'border-border-strong bg-surface'
+        className={`flex flex-col items-center gap-3 rounded-card border border-dashed px-4 py-7 text-center transition-colors duration-150 sm:flex-row sm:gap-4 sm:px-6 sm:py-5 sm:text-left ${
+          dragging ? 'border-accent bg-accent-soft' : 'border-border-strong bg-surface hover:bg-surface-muted'
         }`}
       >
-        <div className="flex size-11 shrink-0 items-center justify-center rounded-card bg-accent-soft text-accent">
+        <div className="flex size-11 shrink-0 items-center justify-center rounded-pill bg-accent-soft text-accent">
           <Upload size={20} strokeWidth={1.75} aria-hidden="true" />
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
@@ -246,7 +246,7 @@ export function FilesPage() {
       </div>
 
       {uploadError && (
-        <p role="alert" className="flex items-start gap-2 rounded-control border border-danger/25 bg-danger-soft px-3 py-2 text-small text-danger">
+        <p role="alert" className="flex items-start gap-2 rounded-box border border-danger/25 bg-danger-soft px-3 py-2 text-small text-danger">
           <AlertTriangle size={16} strokeWidth={1.75} className="mt-0.5 shrink-0" aria-hidden="true" />
           {uploadError}
         </p>
@@ -366,7 +366,7 @@ function MenuItem({ Icon, label, onClick }: { Icon: typeof FileUp; label: string
       type="button"
       role="menuitem"
       onClick={onClick}
-      className="flex h-9 items-center gap-2.5 rounded-[6px] px-2.5 text-left text-body text-text hover:bg-surface-hover focus-visible:bg-surface-hover"
+      className="flex h-10 items-center gap-2.5 rounded-box px-3 text-left text-body text-text hover:bg-surface-hover focus-visible:bg-surface-hover"
     >
       <Icon size={16} strokeWidth={1.75} className="text-muted" />
       {label}
@@ -385,11 +385,11 @@ function KnowledgeStrip({ stats }: { stats: KnowledgeStats }) {
   if (stats.folders > 0) figures.push([stats.folders, stats.folders === 1 ? 'Connected folder' : 'Connected folders'])
   return (
     <div className="flex flex-col gap-2">
-      <dl className="grid grid-cols-2 overflow-hidden rounded-card border border-border bg-surface sm:flex" aria-label="Knowledge stats">
+      <dl className="stagger grid grid-cols-2 gap-2 sm:flex sm:gap-3" aria-label="Knowledge stats">
         {figures.map(([n, label]) => (
-          <div key={label} className="flex flex-1 flex-col gap-0.5 border-border px-4 py-3 sm:not-last:border-r max-sm:odd:border-r max-sm:[&:nth-child(n+3)]:border-t">
+          <div key={label} className="flex flex-1 flex-col gap-0.5 rounded-card bg-surface-muted px-5 py-4">
             <dt className="order-2 text-label text-subtle">{label}</dt>
-            <dd className="tabular order-1 text-h2 text-text">{n.toLocaleString()}</dd>
+            <dd className="tabular order-1 text-[24px] leading-8 font-semibold tracking-[-0.02em] text-text">{n.toLocaleString()}</dd>
           </div>
         ))}
       </dl>

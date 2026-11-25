@@ -4,7 +4,7 @@ import { useWorkspaces } from '../lib/workspaces'
 import { Logo } from './Logo'
 import { SidebarItem } from './SidebarItem'
 import { Skeleton } from './States'
-import { ThemeToggle } from './ThemeToggle'
+import { ThemeSwitch } from './ThemeSwitch'
 import { UserMenu } from './UserMenu'
 
 type SidebarProps = {
@@ -26,9 +26,9 @@ export function Sidebar({ onNavigate, className = '' }: SidebarProps) {
       onClick={(e) => {
         if ((e.target as HTMLElement).closest('a')) onNavigate?.()
       }}
-      className={`flex h-full w-64 shrink-0 flex-col border-r border-border bg-surface ${className}`}
+      className={`flex h-full w-60 shrink-0 flex-col bg-bg ${className}`}
     >
-      <div className="flex h-16 shrink-0 items-center px-5">
+      <div className="flex h-[72px] shrink-0 items-center px-6">
         <Link to="/workspaces" className="rounded-control" aria-label="PinPoint home">
           <Logo />
         </Link>
@@ -40,7 +40,7 @@ export function Sidebar({ onNavigate, className = '' }: SidebarProps) {
       </nav>
 
       <nav className="mt-6 flex min-h-0 flex-1 flex-col" aria-labelledby="sidebar-clients">
-        <div className="flex items-center justify-between pr-3 pb-1 pl-5">
+        <div className="flex items-center justify-between pr-3 pb-1.5 pl-6">
           <h2 id="sidebar-clients" className="text-label text-subtle">
             Clients
           </h2>
@@ -72,10 +72,10 @@ export function Sidebar({ onNavigate, className = '' }: SidebarProps) {
         </div>
       </nav>
 
-      <div className="flex shrink-0 flex-col gap-2 border-t border-border p-3">
-        <div className="flex items-center justify-between px-1.5">
-          <span className="text-label text-subtle">Theme</span>
-          <ThemeToggle />
+      <div className="flex shrink-0 flex-col gap-2 p-3">
+        <div className="flex items-center justify-between px-3">
+          <span className="text-small text-muted">Dark mode</span>
+          <ThemeSwitch />
         </div>
         <UserMenu />
       </div>

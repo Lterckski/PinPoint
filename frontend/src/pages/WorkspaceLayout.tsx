@@ -32,7 +32,7 @@ export function WorkspaceLayout() {
         actions={
           <Link
             to="/workspaces"
-            className="press inline-flex h-9 items-center rounded-control bg-accent px-3.5 text-body font-medium text-on-accent hover:bg-accent-hover"
+            className="press inline-flex h-10 items-center rounded-control bg-accent px-4.5 text-body font-medium text-on-accent hover:bg-accent-hover"
           >
             Back to workspaces
           </Link>
@@ -44,8 +44,8 @@ export function WorkspaceLayout() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <header className="flex flex-col gap-5">
+    <div className="flex flex-col gap-8">
+      <header className="flex flex-col gap-6">
         <nav aria-label="Breadcrumb" className="hidden items-center gap-1.5 text-label sm:flex">
           <Link to="/workspaces" className="text-subtle transition-colors hover:text-text">
             Workspaces
@@ -61,7 +61,7 @@ export function WorkspaceLayout() {
             {ws ? (
               <>
                 <h1 className="truncate text-h1 text-text">{ws.name}</h1>
-                <span className="hidden shrink-0 rounded-pill border border-border px-2 py-[2px] text-label text-muted xs:inline">
+                <span className="hidden shrink-0 rounded-pill bg-surface-muted px-3 py-1 text-label text-muted xs:inline">
                   {ws.industry}
                 </span>
               </>

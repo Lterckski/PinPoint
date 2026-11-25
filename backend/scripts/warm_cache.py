@@ -15,7 +15,8 @@ import re
 import sys
 from pathlib import Path
 
-import httpx
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from api_client import api_client  # noqa: E402
 
 BACKEND = Path(__file__).resolve().parent.parent
 WS_ID = "reyes-partners"
@@ -46,7 +47,7 @@ def main() -> int:
         return 1
 
     problems = 0
-    with httpx.Client(base_url=args.api.rstrip("/"), timeout=120) as client:
+    with api_client(args.api) as client:
         for q in qs:
             r = client.post(f"/api/workspaces/{args.workspace}/ask", json={"question": q})
             if r.status_code != 200:

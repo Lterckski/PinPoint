@@ -6,6 +6,7 @@ import os, shutil, sys, tempfile, time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+os.environ["PINPOINT_AUTH"] = "off"  # these tests cover the API itself; test_auth.py covers sign-in
 os.environ["PINPOINT_DATA_DIR"] = tempfile.mkdtemp(prefix="pinpoint-test-")
 sys.path.insert(0, str(ROOT))
 from fastapi.testclient import TestClient  # noqa: E402
@@ -32,7 +33,7 @@ WS = "reyes-partners"
 def check(label, cond):
     print(("PASS " if cond else "FAIL ") + label)
     if not cond: sys.exit(1)
-with TestClient(main.app) as c:
+with TestClient(main.app, headers={"X-PinPoint-CSRF": "1"}) as c:
     for bad, why in [("relative/path", "relative"), ("/does/not/exist", "missing"), (F + "/notes.txt", "file"), (os.path.expanduser("~"), "home"), ("/", "root")]:
         r = c.post(f"/api/workspaces/{WS}/folders", json={"path": bad}); check(f"reject {why}: {r.json().get('detail')}", r.status_code == 400)
     folder = c.post(f"/api/workspaces/{WS}/folders", json={"path": F}).json()

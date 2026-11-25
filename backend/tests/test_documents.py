@@ -11,6 +11,7 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+os.environ["PINPOINT_AUTH"] = "off"  # these tests cover the API itself; test_auth.py covers sign-in
 os.environ["PINPOINT_DATA_DIR"] = tempfile.mkdtemp(prefix="pinpoint-test-")
 sys.path.insert(0, str(ROOT))
 
@@ -37,7 +38,7 @@ def wait_ready(client: TestClient) -> list[dict]:
     return files
 
 
-with TestClient(main.app) as client:
+with TestClient(main.app, headers={"X-PinPoint-CSRF": "1"}) as client:
     uploaded = client.post(f"/api/workspaces/{WS}/files", files=[("files", ("Memo.txt", MEMO))]).json()[0]
     wait_ready(client)
     raw = client.get(f"/api/workspaces/{WS}/files/{uploaded['id']}/raw")

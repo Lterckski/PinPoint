@@ -19,10 +19,10 @@ Staff at document-heavy firms (legal, real estate, accounting, insurance) who ha
 10. Local files: users can add a whole folder from their computer, either by picking it in the browser (uploads its files) or by connecting a local folder path that PinPoint reads in place and can rescan for new or changed files. PinPoint never modifies or deletes the user's files.
 
 ## Static only (no logic today)
-Landing page with pricing (no payments), sign-in screen (Continue just enters the app), settings members list, Share button.
+Payments and team invites. (The landing page, sign-in with a real owner account, and account settings are built; see docs/ARCHITECTURE.md, "Authentication".)
 
 ## Out of scope
-Payments, real authentication, invites, sharing, email integration, mobile layouts.
+Payments, invites, sharing, email integration. Layouts work from 360px phones up to wide desktops.
 
 ## Demo script
 Load "Reyes & Partners", which holds a scanned PDF, a phone photo of a document, and a spreadsheet. Ask a question worded differently from the document. Ask one that needs a photo. Ask one with no answer. Click a citation to show the proof.

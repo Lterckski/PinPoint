@@ -1,22 +1,33 @@
-import { Clock, Plus } from 'lucide-react'
+import { Clock, FolderPlus, MessageSquareText, Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { DeleteWorkspaceDialog } from '../components/DeleteWorkspaceDialog'
 import { NewWorkspaceDialog } from '../components/NewWorkspaceDialog'
-import { WorkspaceCard } from '../components/WorkspaceCard'
+import { EmptyState, ErrorState, Skeleton } from '../components/States'
+import { WorkspaceTable } from '../components/WorkspaceTable'
 import { api } from '../lib/api'
 import { timeAgo } from '../lib/format'
 import type { CreateWorkspaceRequest, HistoryItem, Workspace } from '../lib/types'
+import { useAuth } from '../lib/auth'
 import { useWorkspaces } from '../lib/workspaces'
 
 type RecentRow = HistoryItem & { workspaceId: string; workspaceName: string }
 
-// Figma 03 Workspaces (6:172): header, grid of workspace cards, dashed New workspace card, recent questions.
+// Workspaces: the client register (one row per workspace), then recent questions across all of them.
 export function WorkspacesPage() {
   const navigate = useNavigate()
+  const { user } = useAuth()
+  const [params, setParams] = useSearchParams()
   const { workspaces, loading, error, refresh } = useWorkspaces()
-  const [creating, setCreating] = useState(false)
+  const [creatingState, setCreatingState] = useState(false)
+  const [retrying, setRetrying] = useState(false)
+  // ?new=1 (the sidebar's + button) opens the New workspace dialog.
+  const creating = creatingState || params.get('new') === '1'
+  const setCreating = (open: boolean) => {
+    setCreatingState(open)
+    if (!open && params.has('new')) setParams({}, { replace: true })
+  }
   const [deleting, setDeleting] = useState<Workspace | null>(null)
   const [recent, setRecent] = useState<RecentRow[] | null>(null)
   const totalFiles = workspaces.reduce((n, w) => n + w.file_count, 0)
@@ -60,71 +71,90 @@ export function WorkspacesPage() {
     setDeleting(null)
   }
 
+  const firstName = user?.name.split(' ')[0]
+  const retry = async () => {
+    setRetrying(true)
+    await refresh()
+    setRetrying(false)
+  }
+
   return (
-    <div className="flex flex-col gap-7 pt-1">
-      <header className="flex items-center justify-between">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-h1 text-text">Workspaces</h1>
-          <p className="text-small text-muted">
-            One workspace per client · {workspaces.length} client{workspaces.length === 1 ? '' : 's'} · {totalFiles} file
-            {totalFiles === 1 ? '' : 's'}
+    <div className="flex flex-col gap-10">
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-h1 text-text">
+            {greeting()}
+            {firstName ? `, ${firstName}` : ''}
+          </h1>
+          <p className="tabular text-body text-muted">
+            {workspaces.length} client workspace{workspaces.length === 1 ? '' : 's'}, {totalFiles} file{totalFiles === 1 ? '' : 's'} in all
           </p>
         </div>
-        <Button onClick={() => setCreating(true)}>New workspace</Button>
+        <Button Icon={Plus} onClick={() => setCreating(true)} className="self-start sm:self-auto">
+          New workspace
+        </Button>
       </header>
 
       {error && !workspaces.length ? (
-        <div role="alert" className="flex items-center gap-3 rounded-card border border-border bg-danger-soft px-5 py-4">
-          <p className="flex-1 text-small text-text">{error}</p>
-          <Button variant="secondary" onClick={() => void refresh()}>
-            Retry
-          </Button>
-        </div>
+        <ErrorState title="Couldn't load your workspaces" message={error} onRetry={() => void retry()} retrying={retrying} />
+      ) : !loading && workspaces.length === 0 ? (
+        <EmptyState
+          Icon={FolderPlus}
+          title="Create your first workspace"
+          actions={
+            <Button Icon={Plus} onClick={() => setCreating(true)}>
+              New workspace
+            </Button>
+          }
+        >
+          Make one workspace per client, add their files, then ask questions across all of them.
+        </EmptyState>
       ) : (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
-          {loading && !workspaces.length
-            ? [0, 1, 2].map((i) => <div key={i} className="h-[178px] animate-pulse rounded-card border border-border bg-surface" />)
-            : workspaces.map((w) => <WorkspaceCard key={w.id} workspace={w} onDelete={setDeleting} />)}
-          <button
-            type="button"
-            onClick={() => setCreating(true)}
-            className="flex min-h-[178px] flex-col items-center justify-center gap-2.5 rounded-card border border-dashed border-border text-muted hover:border-accent hover:text-text"
-          >
-            <span className="flex size-9 items-center justify-center rounded-pill bg-surface-muted">
-              <Plus size={18} strokeWidth={1.75} />
-            </span>
-            <span className="text-body font-medium">New workspace</span>
-          </button>
-        </div>
+        <WorkspaceTable workspaces={workspaces} loading={loading} onDelete={setDeleting} />
       )}
 
-      <section className="flex flex-col gap-3" aria-label="Recent questions">
-        <h2 className="text-h3 text-text">Recent questions</h2>
-        {recent === null ? (
-          <div className="h-[52px] animate-pulse rounded-card bg-surface-muted" />
-        ) : recent.length === 0 ? (
-          <p className="text-small text-muted">Questions you ask in any workspace show up here.</p>
-        ) : (
-          <ul className="flex flex-col overflow-hidden rounded-card border border-border bg-surface">
-            {recent.map((r) => (
-              <li key={r.id} className="border-b border-border last:border-b-0">
-                <Link
-                  to={`/w/${r.workspaceId}/ask?h=${r.id}`}
-                  className="flex items-center gap-3 px-4 py-3.5 hover:bg-surface-muted"
-                >
-                  <Clock size={16} strokeWidth={1.75} className="shrink-0 text-muted" />
-                  <span className="min-w-0 flex-1 truncate text-body text-text">{r.question}</span>
-                  <span className="shrink-0 text-label text-muted">{r.workspaceName}</span>
-                  <span className="shrink-0 text-label text-muted">{timeAgo(r.created_at)}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      {workspaces.length > 0 && (
+        <section className="flex flex-col gap-3" aria-labelledby="recent-heading">
+          <h2 id="recent-heading" className="text-h3 text-text">
+            Recent questions
+          </h2>
+          {recent === null ? (
+            <Skeleton className="h-[104px] rounded-card" />
+          ) : recent.length === 0 ? (
+            <EmptyState Icon={MessageSquareText} title="No questions yet" compact>
+              Questions you ask in any workspace show up here, so you can reopen an answer in one click.
+            </EmptyState>
+          ) : (
+            <ul className="stagger flex flex-col divide-y divide-border overflow-hidden rounded-card border border-border bg-surface shadow-subtle">
+              {recent.map((r) => (
+                <li key={r.id}>
+                  <Link
+                    to={`/w/${r.workspaceId}/ask?h=${r.id}`}
+                    className="flex flex-col gap-1 px-5 py-3.5 transition-colors hover:bg-surface-muted sm:flex-row sm:items-center sm:gap-3"
+                  >
+                    <span className="flex min-w-0 flex-1 items-center gap-3">
+                      <Clock size={16} strokeWidth={1.75} className="shrink-0 text-subtle" aria-hidden="true" />
+                      <span className="min-w-0 flex-1 truncate text-body text-text">{r.question}</span>
+                    </span>
+                    <span className="flex shrink-0 gap-3 pl-7 text-label text-subtle sm:pl-0">
+                      <span className="max-w-[160px] truncate">{r.workspaceName}</span>
+                      <span>{timeAgo(r.created_at)}</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
 
       {creating && <NewWorkspaceDialog onCreate={create} onClose={() => setCreating(false)} />}
       {deleting && <DeleteWorkspaceDialog workspace={deleting} onDelete={remove} onClose={() => setDeleting(null)} />}
     </div>
   )
+}
+
+function greeting(): string {
+  const h = new Date().getHours()
+  return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'
 }

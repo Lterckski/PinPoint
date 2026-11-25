@@ -1,97 +1,229 @@
 @import 'tailwindcss';
 
-/* Dark mode is driven by the .dark class on <html> (see docs/DESIGN.md). */
+/*
+ * PinPoint design system ("Quiet"). docs/DESIGN.md explains every token.
+ *
+ * Two tiers:
+ *   1. Primitives: neutral ramps (--gray-*, --night-*), the marker and status hues. Never used in components.
+ *   2. Semantic tokens: roles (--background, --surface1, --text2, --accent, ...). Components use
+ *      only these, through the Tailwind utilities mapped in @theme below.
+ *
+ * Monochrome on purpose: ink-black actions on white paper, so the only color on screen is the
+ * yellow mark on a cited passage and the occasional status. Every text/background pair below was
+ * measured: body text >= 4.7:1, input borders >= 3.2:1, in both themes.
+ *
+ * Dark mode is the .dark class on <html> (set before first paint in index.html).
+ */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Tokens mirror the Figma variables (same names). */
 :root {
-  --bg: #fafaf9;
-  --surface: #ffffff;
-  --surface-muted: #f4f4f2;
-  --border: #e7e5e1;
-  --text: #18181b;
-  --text-muted: #6b6b70;
-  --accent: #4338ca;
-  --accent-hover: #3730a3;
-  --accent-soft: #eef0ff;
-  --on-accent: #ffffff;
-  --highlight: #fde68a;
-  --success: #15803d;
-  --success-soft: #ecfdf3;
-  --warning: #b45309;
-  --warning-soft: #fff7ed;
-  --danger: #b91c1c;
-  --danger-soft: #fef2f2;
-  --shadow: rgba(0, 0, 0, 0.04);
-  --shadow-panel: rgba(0, 0, 0, 0.08);
-  --scrim: rgba(24, 24, 27, 0.32);
-  --radius-sm: 8px;
-  --radius-md: 12px;
+  /* Neutrals, light end (a hint of cool, chroma < 0.004) */
+  --gray-0: #ffffff;
+  --gray-25: #fafafa;
+  --gray-50: #f4f4f5;
+  --gray-75: #ededef;
+  --gray-90: #f1f1f3;
+  --gray-100: #e8e8eb;
+  --gray-200: #d9d9dd;
+  --gray-400: #8b8b92;
+  --gray-450: #a8a8ae;
+  --gray-500: #67676f;
+  --gray-600: #52525a;
+  --gray-800: #2c2c30;
+  --gray-900: #111113;
+
+  /* Neutrals, dark end */
+  --night-50: #ededef;
+  --night-200: #a8a8af;
+  --night-300: #909098;
+  --night-500: #6b6b72;
+  --night-600: #4f4f55;
+  --night-700: #333337;
+  --night-750: #26262a;
+  --night-800: #212124;
+  --night-850: #1a1a1d;
+  --night-875: #222225;
+  --night-900: #141416;
+  --night-950: #0c0c0d;
+
+  /* Highlighter: cited passages only */
+  --marker-200: #fae492;
+  --marker-300: #f1c955;
+  --marker-700: #77601b;
+  --marker-800: #554614;
+
+  /* Status */
+  --green-50: #e9f8ec;
+  --green-300: #76c788;
+  --green-700: #206b38;
+  --green-900: #132416;
+  --amber-50: #fff3e3;
+  --amber-300: #e4b066;
+  --amber-700: #90570c;
+  --amber-900: #2c1f0e;
+  --red-50: #fff0ee;
+  --red-300: #eb827b;
+  --red-700: #b02b27;
+  --red-900: #341816;
+
+  /* Semantic tokens: light */
+  --background: var(--gray-50);
+  --surface1: var(--gray-0);
+  --surface2: var(--gray-50);
+  --surface3: var(--gray-75);
+  --border: var(--gray-100);
+  --border-visible: var(--gray-200);
+  --border-input: var(--gray-400);
+  --text1: var(--gray-900);
+  --text2: var(--gray-600);
+  --text3: var(--gray-500);
+  --text4: var(--gray-450);
+  --accent: var(--gray-900);
+  --accent-hover: var(--gray-800);
+  --accent-subtle: var(--gray-90);
+  --accent-border: var(--gray-200);
+  --on-accent: var(--gray-0);
+  --highlight: var(--marker-200);
+  --highlight-strong: var(--marker-300);
+  --success: var(--green-700);
+  --success-bg: var(--green-50);
+  --warning: var(--amber-700);
+  --warning-bg: var(--amber-50);
+  --error: var(--red-700);
+  --error-bg: var(--red-50);
+  --band: var(--gray-900);
+  --on-band: var(--night-50);
+  --on-band-muted: var(--night-200);
+  --band-border: var(--night-700);
+  --scrim: rgb(17 17 19 / 0.32);
+  --shadow-color: 17 17 19;
+  --shadow-strength: 1;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-full: 999px;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --duration-fast: 140ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+
   color-scheme: light;
 }
 
 .dark {
-  --bg: #0e0f12;
-  --surface: #16181d;
-  --surface-muted: #1d2026;
-  --border: #2a2d35;
-  --text: #ececef;
-  --text-muted: #9a9ca5;
-  --accent: #8b9cff;
-  --accent-hover: #a5b2ff;
-  --accent-soft: rgba(139, 156, 255, 0.14);
-  --on-accent: #0e0f12;
-  --highlight: rgba(250, 204, 21, 0.28);
-  --success: #4ade80;
-  --success-soft: rgba(74, 222, 128, 0.12);
-  --warning: #fbbf24;
-  --warning-soft: rgba(251, 191, 36, 0.12);
-  --danger: #f87171;
-  --danger-soft: rgba(248, 113, 113, 0.12);
-  --shadow: transparent;
-  --shadow-panel: transparent;
-  --scrim: rgba(0, 0, 0, 0.56);
+  --background: var(--night-950);
+  --surface1: var(--night-900);
+  --surface2: var(--night-850);
+  --surface3: var(--night-800);
+  --border: var(--night-750);
+  --border-visible: var(--night-700);
+  --border-input: var(--night-500);
+  --text1: var(--night-50);
+  --text2: var(--night-200);
+  --text3: var(--night-300);
+  --text4: var(--night-600);
+  --accent: var(--night-50);
+  --accent-hover: var(--gray-0);
+  --accent-subtle: var(--night-875);
+  --accent-border: var(--night-700);
+  --on-accent: var(--gray-900);
+  --highlight: var(--marker-800);
+  --highlight-strong: var(--marker-700);
+  --success: var(--green-300);
+  --success-bg: var(--green-900);
+  --warning: var(--amber-300);
+  --warning-bg: var(--amber-900);
+  --error: var(--red-300);
+  --error-bg: var(--red-900);
+  --band: var(--night-850);
+  --on-band: var(--night-50);
+  --on-band-muted: var(--night-200);
+  --band-border: var(--night-700);
+  --scrim: rgb(0 0 0 / 0.6);
+  --shadow-color: 0 0 0;
+  /* Dark surfaces separate by lightness and borders; shadows only for floating layers. */
+  --shadow-strength: 0;
   color-scheme: dark;
 }
 
-/* Expose tokens to Tailwind utilities: bg-surface, text-muted, border-border, ... */
+/*
+ * Tailwind utilities. Names are roles: bg-surface, text-muted, border-strong, ...
+ * (The short names bg/text/muted are kept from the first version so screens read the same.)
+ */
 @theme inline {
-  --color-bg: var(--bg);
-  --color-surface: var(--surface);
-  --color-surface-muted: var(--surface-muted);
+  --color-bg: var(--background);
+  --color-surface: var(--surface1);
+  --color-surface-muted: var(--surface2);
+  --color-surface-hover: var(--surface3);
   --color-border: var(--border);
-  --color-text: var(--text);
-  --color-muted: var(--text-muted);
+  --color-border-strong: var(--border-visible);
+  --color-input: var(--border-input);
+  --color-text: var(--text1);
+  --color-muted: var(--text2);
+  --color-subtle: var(--text3);
+  --color-faint: var(--text4);
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
-  --color-accent-soft: var(--accent-soft);
+  --color-accent-soft: var(--accent-subtle);
+  --color-accent-border: var(--accent-border);
   --color-on-accent: var(--on-accent);
   --color-highlight: var(--highlight);
+  --color-highlight-strong: var(--highlight-strong);
   --color-success: var(--success);
-  --color-success-soft: var(--success-soft);
+  --color-success-soft: var(--success-bg);
   --color-warning: var(--warning);
-  --color-warning-soft: var(--warning-soft);
-  --color-danger: var(--danger);
-  --color-danger-soft: var(--danger-soft);
+  --color-warning-soft: var(--warning-bg);
+  --color-danger: var(--error);
+  --color-danger-soft: var(--error-bg);
   --color-scrim: var(--scrim);
+  /* The one inverted band on the landing page (privacy). */
+  --color-band: var(--band);
+  --color-on-band: var(--on-band);
+  --color-on-band-muted: var(--on-band-muted);
+  --color-band-border: var(--band-border);
 
-  --radius-control: var(--radius-sm);
-  --radius-card: var(--radius-md);
+  /* Soft and round: every control is a pill, every surface a large rounded panel. */
+  --radius-control: var(--radius-full);
+  --radius-box: var(--radius-md);
+  --radius-card: var(--radius-lg);
+  --radius-panel: var(--radius-xl);
   --radius-pill: var(--radius-full);
 
-  --shadow-subtle: 0 1px 2px var(--shadow);
-  --shadow-panel: 0 8px 24px var(--shadow-panel);
+  /* Elevation: soft. Resting cards get a whisper of shadow; floating layers a real one.
+     Dark mode drops resting shadows and relies on lightness and borders. */
+  --shadow-subtle: 0 1px 2px rgb(var(--shadow-color) / calc(0.04 * var(--shadow-strength)));
+  --shadow-card:
+    0 1px 2px rgb(var(--shadow-color) / calc(0.04 * var(--shadow-strength))),
+    0 4px 16px -4px rgb(var(--shadow-color) / calc(0.06 * var(--shadow-strength)));
+  --shadow-panel:
+    0 2px 6px rgb(var(--shadow-color) / 0.05), 0 20px 48px -12px rgb(var(--shadow-color) / 0.18);
 
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-serif: 'Instrument Serif', ui-serif, Georgia, serif;
+  --ease-out: var(--ease-out);
+  --ease-in-out: var(--ease-in-out);
+
+  --font-sans: 'Geist Sans', 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* One family: document text (passages, notes) is set apart by the highlight, not a second face. */
+  --font-serif: var(--font-sans);
+  --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 }
 
-/* Type scale from docs/DESIGN.md; letter-spacing from the Figma text styles. */
+/* Type scale (docs/DESIGN.md, "Type"). One family; weight and color carry the hierarchy. */
 @theme {
-  --text-h1: 24px;
-  --text-h1--line-height: 32px;
-  --text-h1--letter-spacing: -0.015em;
+  --text-display: 56px;
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.04em;
+  --text-display--font-weight: 500;
+  --text-section: 36px;
+  --text-section--line-height: 1.12;
+  --text-section--letter-spacing: -0.03em;
+  --text-section--font-weight: 500;
+  --text-h1: 30px;
+  --text-h1--line-height: 36px;
+  --text-h1--letter-spacing: -0.03em;
   --text-h1--font-weight: 600;
   --text-h2: 18px;
   --text-h2--line-height: 26px;
@@ -99,8 +231,11 @@
   --text-h2--font-weight: 600;
   --text-h3: 15px;
   --text-h3--line-height: 22px;
-  --text-h3--letter-spacing: -0.005em;
   --text-h3--font-weight: 600;
+  --text-lead: 18px;
+  --text-lead--line-height: 28px;
+  --text-answer: 16px;
+  --text-answer--line-height: 26px;
   --text-body: 14px;
   --text-body--line-height: 22px;
   --text-small: 13px;
@@ -108,31 +243,290 @@
   --text-label: 12px;
   --text-label--line-height: 16px;
   --text-label--font-weight: 500;
-  --text-eyebrow: 11px;
-  --text-eyebrow--line-height: 16px;
-  --text-eyebrow--letter-spacing: 0.06em;
-  --text-eyebrow--font-weight: 500;
-  --text-doc: 16px;
+  --text-doc: 15px;
   --text-doc--line-height: 24px;
-  --text-section: 36px;
-  --text-section--line-height: 42px;
-  --text-section--letter-spacing: -0.014em;
-  --text-hero: 72px;
-  --text-hero--line-height: 76px;
-  --text-hero--letter-spacing: -0.02em;
+
+  --breakpoint-xs: 30rem;
 }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 14px;
-  line-height: 22px;
-  -webkit-font-smoothing: antialiased;
+@layer base {
+  html,
+  body {
+    overflow-x: clip;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--background);
+    color: var(--text1);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 22px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--accent-subtle);
+    color: var(--text1);
+  }
+
+  /* Touch: no gray flash on tap; controls draw their own pressed state. */
+  button,
+  a,
+  [role='button'] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  summary {
+    cursor: pointer;
+  }
+
+  /* Phones: 16px form text so iOS doesn't zoom on focus. */
+  @media (max-width: 639px) {
+    input,
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  /* One visible focus ring everywhere: 2px accent, 2px offset (>= 3:1 against both backgrounds).
+     In the base layer so a component can swap it for its own ring (inputs use a soft glow). */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
 }
 
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+
+/* Numbers that line up in lists and stats. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hide scrollbars on horizontal tab strips while keeping them scrollable. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+ * Motion (docs/DESIGN.md, "Motion"). Felt, not watched: ease-out, 140 to 420ms, transform and
+ * opacity only, nothing bounces. Every page, dialog, list and button moves a little;
+ * prefers-reduced-motion turns all of it off (bottom of this file).
+ */
+@keyframes pp-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pp-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes pp-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes pp-scale-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.97);
+  }
+}
+@keyframes pp-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes pp-slide-in-right {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+@keyframes pp-slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+}
+@keyframes pp-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.animate-fade-in {
+  animation: pp-fade-in var(--duration-base) var(--ease-out);
+}
+.animate-rise-in {
+  animation: pp-rise-in var(--duration-slow) var(--ease-out) backwards;
+}
+/* A page or tab arriving (AppShell keys it on the route). */
+.animate-page {
+  animation: pp-page-in 420ms var(--ease-out) backwards;
+}
+/* Dialogs: scale in from 97% on desktop, slide up as a sheet on phones. */
+.animate-dialog {
+  animation: pp-scale-in 240ms var(--ease-out) backwards;
+}
+@media (max-width: 639px) {
+  .animate-dialog {
+    animation: pp-sheet-in 320ms var(--ease-out) backwards;
+  }
+}
+.animate-slide-in-right {
+  animation: pp-slide-in-right var(--duration-slow) var(--ease-out);
+}
+.animate-slide-in-left {
+  animation: pp-slide-in-left var(--duration-slow) var(--ease-out);
+}
+
+/* Lists cascade in: each child 40ms after the one before (up to the tenth). */
+.stagger > * {
+  animation: pp-rise-in 380ms var(--ease-out) backwards;
+  animation-delay: calc(var(--i, 9) * 40ms);
+}
+.stagger > :nth-child(1) { --i: 0; }
+.stagger > :nth-child(2) { --i: 1; }
+.stagger > :nth-child(3) { --i: 2; }
+.stagger > :nth-child(4) { --i: 3; }
+.stagger > :nth-child(5) { --i: 4; }
+.stagger > :nth-child(6) { --i: 5; }
+.stagger > :nth-child(7) { --i: 6; }
+.stagger > :nth-child(8) { --i: 7; }
+.stagger > :nth-child(9) { --i: 8; }
+
+/* Landing sections rise in as they scroll into view. Hidden only once JavaScript has said it
+   will reveal them (the .js class from index.html), so content is never lost without scripts. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 700ms var(--ease-out),
+    transform 700ms var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.js .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Text links: an underline that draws in from the left. */
+.link-draw {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size var(--duration-base) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+.link-draw:hover {
+  background-size: 100% 1px;
+}
+
+/* Cards that open something lift a pixel on hover. */
+.lift {
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+@media (hover: hover) {
+  .lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+  }
+}
+
+/* Skeleton: a soft sweep instead of a blink. */
+.skeleton {
+  background: linear-gradient(90deg, var(--surface2) 0%, var(--surface3) 50%, var(--surface2) 100%);
+  background-size: 200% 100%;
+  animation: pp-shimmer 1.4s linear infinite;
+}
+
+/* Indeterminate progress (a file being read). */
+.progress-indeterminate {
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-border) 50%, var(--accent) 100%);
+  background-size: 200% 100%;
+  animation: pp-shimmer 1.6s linear infinite;
+}
+
+/* Cited text: a flat highlighter band, the way a reviewer marks an exhibit. */
+.marker {
+  background: var(--highlight);
+  border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0.04em 0.12em;
+  color: var(--text1);
+}
+
+/* Press feedback: every button eases its colors on hover and dips to 97% when pressed. */
+.press {
+  transition-property: transform, background-color, border-color, color, box-shadow, opacity;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-out);
+}
+.press:active:not(:disabled):not([aria-disabled='true']) {
+  transform: scale(0.97);
+}
+
+/* Overlays keep their scroll to themselves. */
+.overscroll-contain {
+  overscroll-behavior: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .press:active:not(:disabled) {
+    transform: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .marker {
+    forced-color-adjust: none;
+    background: Mark;
+    color: MarkText;
+  }
 }

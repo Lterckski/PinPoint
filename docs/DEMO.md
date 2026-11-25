@@ -52,6 +52,7 @@ Allow 30–45 minutes on good Wi-Fi; most of it is downloads. Tested on macOS (A
 6. [ ] Start the backend and frontend (section 1, terminals 2 and 3), then check:
    ```sh
    curl -s http://localhost:8000/api/health
+   # Signed out this only says {"ok": true}. For the details, open the same URL in the browser where you're signed in to PinPoint.
    ```
    Expect `"llm": {"ok": true, "mode": "generate", ...}` and `"mineru": {"ok": true, ...}`. If llm isn't ok, check `backend/.env` and the Wi-Fi.
 7. [ ] Load the demo workspaces: `cd backend && .venv/bin/python scripts/reset_demo.py` → `All demo workspaces ready.`

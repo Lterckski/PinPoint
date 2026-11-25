@@ -10,6 +10,7 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+os.environ["PINPOINT_AUTH"] = "off"  # these tests cover the API itself; test_auth.py covers sign-in
 os.environ["PINPOINT_DATA_DIR"] = tempfile.mkdtemp(prefix="pinpoint-test-")
 sys.path.insert(0, str(ROOT))
 
@@ -41,7 +42,7 @@ def system(name: str):
     picker.platform.system = lambda: name
 
 
-with TestClient(main.app, client=("127.0.0.1", 50000)) as local, TestClient(main.app, client=("192.168.1.20", 50000)) as remote:
+with TestClient(main.app, headers={"X-PinPoint-CSRF": "1"}, client=("127.0.0.1", 50000)) as local, TestClient(main.app, headers={"X-PinPoint-CSRF": "1"}, client=("192.168.1.20", 50000)) as remote:
     url = "/api/system/pick-folder"
 
     system("Darwin")

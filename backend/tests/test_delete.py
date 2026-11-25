@@ -15,6 +15,7 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+os.environ["PINPOINT_AUTH"] = "off"  # these tests cover the API itself; test_auth.py covers sign-in
 os.environ["PINPOINT_DATA_DIR"] = tempfile.mkdtemp(prefix="pinpoint-test-")
 os.environ["EMBED_BASE"] = ""  # BM25 only, offline
 sys.path.insert(0, str(ROOT))
@@ -56,7 +57,7 @@ in_folder = storage.add_folder_file(WS, "f1", str(original), original.stat().st_
 storage.update_file(WS, in_folder["id"], status="ready")
 queued = storage.add_upload(WS, "Queued.md", b"Waiting.")
 
-with TestClient(main.app) as client:
+with TestClient(main.app, headers={"X-PinPoint-CSRF": "1"}) as client:
     url = f"/api/workspaces/{WS}/files"
     r = client.delete(f"{url}/{gone['id']}")
     check("delete an upload -> 200", r.status_code == 200 and r.json() == {"ok": True})

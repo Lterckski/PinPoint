@@ -4,17 +4,17 @@ Before any task, read this file, then docs/PRODUCT.md, docs/ARCHITECTURE.md, and
 
 ## Context
 - PinPoint is a document-based RAG web app for a 4-hour hackathon (ALMA "Future Forge"). Judges score a working live demo and the presentation at 70% combined, so reliability beats feature count.
-- MVP only. Payments, real authentication, team invites, and sharing are out of scope. Their UI may exist as static screens but must not call anything.
+- MVP only. Payments, team invites, and sharing are out of scope. Sign-in is real (one owner account per install, see docs/ARCHITECTURE.md "Authentication"); never add a route that skips GuardMiddleware.
 
 ## Stack
-- frontend/: React + Vite + TypeScript (strict) + Tailwind CSS + react-router-dom + lucide-react. Fonts self-hosted via @fontsource (Inter, Instrument Serif).
+- frontend/: React + Vite + TypeScript (strict) + Tailwind CSS + react-router-dom + lucide-react. Fonts self-hosted via @fontsource (Geist and Geist Mono).
 - backend/: Python 3.12 + FastAPI. MinerU 4.x runs locally for parsing. rank_bm25 for search. Pillow for crops.
 - LLM: switchable via LLM_PROVIDER in backend/.env. Primary: openai_compatible (Claude Haiku via the organizers' Open WebUI server, OpenAI-compatible chat completions). Fallbacks: anthropic (Claude Haiku via the Anthropic API directly) and none (extractive mode, no LLM). Only backend/app/llm.py talks to a model (chat and embeddings).
 
-## Figma (design source of truth)
+## Figma (original design; docs/DESIGN.md is now the source of truth)
 - File key: dEpoBVGwqEwzOmYaKJC750. Frame node ids are listed in docs/DESIGN.md.
 - Read designs through the Figma MCP server (https://mcp.figma.com/mcp): get_design_context for a frame's structure and styles, get_variable_defs for tokens, get_screenshot to compare visually, get_metadata to find node ids. In URLs, node id 3:2 is written node-id=3-2.
-- Before building any screen, pull its design context and a screenshot, and match them. After building it, compare your result against the screenshot.
+- The redesign (docs/DESIGN.md) supersedes the Figma frames for colors, type, and layout. Use Figma for reference only.
 - Figma is a development-time tool only. The running app must never call Figma.
 
 ## Commands (start in this order)
@@ -28,7 +28,7 @@ Before any task, read this file, then docs/PRODUCT.md, docs/ARCHITECTURE.md, and
 3. Never guess MinerU's output format. Run it on a real sample file and inspect the JSON before writing any parser.
 4. Answers come only from the document blocks given to the LLM (retrieved blocks plus their context expansion, at most 12). Every answer sentence must cite at least one source block. Anything unsupported becomes "not_found". Enforce this in code, not only in the prompt.
 5. Totals and calculations are computed in Python, never by the LLM.
-6. Use design tokens (CSS variables) for every color. No hard-coded hex values in components.
+6. Use design tokens for every color: semantic Tailwind utilities (bg-surface, text-muted, border-strong, ...) mapped in src/index.css. No hex values or primitive ramps (--gray-*, --night-*) in components.
 7. docs/ARCHITECTURE.md holds the API contract. If you change it, update the doc, the backend, and frontend/src/lib/types.ts together.
 8. Work in small phases. After each phase, stop and tell us exactly how to test it.
 

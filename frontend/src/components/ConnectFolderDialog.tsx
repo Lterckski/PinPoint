@@ -59,13 +59,14 @@ export function ConnectFolderDialog({ onConnect, onClose }: ConnectFolderDialogP
   }
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-scrim p-4" onMouseDown={onClose}>
+    <div className="animate-fade-in fixed inset-0 z-40 flex items-end justify-center bg-scrim p-0 sm:items-center sm:p-4" onMouseDown={onClose}>
       <form
         role="dialog"
+        aria-modal="true"
         aria-label="Connect a local folder"
         onSubmit={submit}
         onMouseDown={(e) => e.stopPropagation()}
-        className="flex w-full max-w-[480px] flex-col gap-5 rounded-card border border-border bg-surface p-6 shadow-panel"
+        className="flex w-full max-w-[480px] flex-col gap-5 overflow-y-auto overscroll-contain rounded-t-panel border border-border bg-surface p-5 shadow-panel max-h-[92dvh] animate-dialog sm:rounded-panel sm:p-6"
       >
         <header className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -105,7 +106,7 @@ export function ConnectFolderDialog({ onConnect, onClose }: ConnectFolderDialogP
           </p>
         </div>
 
-        <p className="flex gap-2.5 rounded-control bg-surface-muted px-3.5 py-3 text-small text-muted">
+        <p className="flex gap-2.5 rounded-box bg-surface-muted px-3.5 py-3 text-small text-muted">
           <ShieldCheck size={16} strokeWidth={1.75} className="mt-0.5 shrink-0 text-success" />
           PinPoint reads this folder on this computer. It never changes or deletes your files.
         </p>

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { WorkspaceCard } from '../components/WorkspaceCard'
+import { WorkspaceTable } from '../components/WorkspaceTable'
 import { useWorkspaces } from '../lib/workspaces'
 
 export type ClientTab = 'files' | 'ask' | 'memory'
@@ -10,7 +10,7 @@ const TITLES: Record<ClientTab, string> = {
   memory: 'Choose whose notes and history to open.',
 }
 
-// Not in Figma: sidebar Files / Ask / Memory land here first, reusing the Workspaces grid's cards.
+// Not in Figma: sidebar Files / Ask / Memory land here first, reusing the client table.
 export function SelectClientPage({ tab }: { tab: ClientTab }) {
   const { workspaces, loading, error } = useWorkspaces()
   return (
@@ -23,13 +23,7 @@ export function SelectClientPage({ tab }: { tab: ClientTab }) {
         <p role="alert" className="text-small text-danger">
           {error}
         </p>
-      ) : loading && !workspaces.length ? (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="h-[178px] animate-pulse rounded-card border border-border bg-surface" />
-          ))}
-        </div>
-      ) : workspaces.length === 0 ? (
+      ) : !loading && workspaces.length === 0 ? (
         <p className="text-small text-muted">
           No clients yet.{' '}
           <Link to="/workspaces" className="text-accent hover:text-accent-hover">
@@ -38,11 +32,7 @@ export function SelectClientPage({ tab }: { tab: ClientTab }) {
           .
         </p>
       ) : (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
-          {workspaces.map((w) => (
-            <WorkspaceCard key={w.id} workspace={w} to={`/w/${w.id}/${tab}`} />
-          ))}
-        </div>
+        <WorkspaceTable workspaces={workspaces} loading={loading} linkTo={(w) => `/w/${w.id}/${tab}`} />
       )}
     </div>
   )

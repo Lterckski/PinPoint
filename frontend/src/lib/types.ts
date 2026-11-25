@@ -154,3 +154,22 @@ export type FileText = {
   page_count: number
   pages: { page: number; blocks: FileTextBlock[] }[]
 }
+
+// Authentication (docs/ARCHITECTURE.md, "Authentication").
+
+export type AuthUser = {
+  id: string
+  name: string
+  email: string
+  role: 'owner' | 'member'
+}
+
+export type AuthSession = {
+  user: AuthUser | null
+  /** True until the first (owner) account exists: the sign-in page shows "Set up PinPoint". */
+  setup_required: boolean
+  /** False when the server runs with PINPOINT_AUTH=off: no sign-in, a local user. */
+  auth_enabled: boolean
+}
+
+export type AccountDetails = AuthUser & { sessions: number }

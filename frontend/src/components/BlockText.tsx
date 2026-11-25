@@ -5,7 +5,7 @@ export function BlockText({ text, table }: { text: string; table?: string[][] })
     const columns = Math.max(...table.map((r) => r.length))
     const pad = (row: string[]) => [...row, ...Array<string>(columns - row.length).fill('')]
     return (
-      <div className="overflow-x-auto rounded-control border border-border">
+      <div className="overflow-x-auto rounded-box border border-border">
         <table className="w-full border-collapse text-small text-text">
           <thead className="bg-surface-muted">
             <tr>

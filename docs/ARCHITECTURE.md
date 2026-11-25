@@ -96,9 +96,36 @@ FileItem gains: source: "upload"|"folder", source_path?
 Citation gains: kind: "file"|"note". crop_url is null for notes and plain-text files.
 Citation.text is the block's full cleaned text with its line breaks (parser artifacts stripped: page markers, HTML comments, heading and emphasis marks). Citation.excerpt is the short supporting passage: the LLM's per-source span when it is a verbatim substring of the block (whitespace and case normalized; the excerpt is cut from the block, never the LLM's copy), otherwise the 1–3 lines or sentences with the most question and answer-term overlap. Citation.table (only for table blocks) is the block's rows of cells, for rendering as a real table.
 
+## Authentication
+Sign-in is on by default (PINPOINT_AUTH=on). Code: backend/app/auth.py, routes and GuardMiddleware in app/main.py; frontend: src/components/AuthProvider.tsx, RequireAuth.tsx, src/pages/SignInPage.tsx.
+
+- First run: no account exists, so the sign-in page shows "Set up PinPoint" and POST /api/auth/setup creates the owner. Setup only works from this computer (loopback) unless PINPOINT_ALLOW_REMOTE_SETUP=1, and only while no account exists.
+- Accounts: backend/data/_auth/users.json (0600). Passwords: scrypt (N=2^15, r=8, p=1, 16-byte salt), 10 to 256 characters, never the email. Unknown emails still cost one scrypt, and every failure says "That email and password don't match."
+- Sessions: a 256-bit random token in the HttpOnly, SameSite=Lax cookie pinpoint_session (Secure when PINPOINT_COOKIE_SECURE=1). Only its SHA-256 is stored (backend/data/_auth/sessions.json). A new token on every sign-in and password change. Ends after 72 h idle or 7 days.
+- Throttling: 5 failed sign-ins per email per address, or 20 per address, in 15 minutes → 429 with Retry-After. In memory, at most 10,000 keys.
+- GuardMiddleware, on every /api route: writes (POST/PATCH/PUT/DELETE) need the header X-PinPoint-CSRF: 1 and, when the browser sends Origin, an origin in PINPOINT_ALLOWED_ORIGINS (custom headers force a CORS preflight, which only those origins pass); everything except /api/health and /api/auth/{session,login,setup} needs a session (401 otherwise); responses get Cache-Control: private, no-store, nosniff, X-Frame-Options: DENY, Referrer-Policy: no-referrer, and CSP default-src 'none'.
+- /api/health signed out returns only {"ok": true}.
+- Uploads: only SUPPORTED extensions (415 otherwise). GET /files/{id}/raw displays inline only pdf, png, jpg, webp and text (as text/plain); anything else downloads. Raw responses carry a sandbox CSP.
+- PINPOINT_AUTH=off: no sign-in; /api/auth/session returns a "Local user". The CSRF header is still required.
+
+Routes:
+GET /api/auth/session → {user: AuthUser|null, setup_required, auth_enabled}
+POST /api/auth/setup {name, email, password} → AuthSession, sets cookie (409 once set up, 403 off-machine)
+POST /api/auth/login {email, password} → AuthSession, sets cookie (401, 429)
+POST /api/auth/logout → {ok}, clears this session
+POST /api/auth/logout-all → {ok}, ends every session of this user, this one included
+GET /api/auth/me → AuthUser + {sessions}
+PATCH /api/auth/me {name} → AuthUser
+POST /api/auth/password {current_password, new_password} → AuthSession; ends every other session (403 wrong current, 422 rules)
+AuthUser = {id, name, email, role: "owner"|"member"}
+
+Scripts (reset_demo.py, warm_cache.py) sign in with PINPOINT_EMAIL and PINPOINT_PASSWORD from the environment.
+
 ## Data layout
 backend/data/{ws}/workspace.json, uploads/, parsed/, blocks.json, embeddings.json, crops/
+backend/data/_auth/users.json, sessions.json (accounts; never commit)
 
 ## Environment
 backend/.env: LLM_PROVIDER (openai_compatible | anthropic | none), OPENAI_COMPAT_BASE (http://localhost:11434/v1), OPENAI_COMPAT_KEY (ollama), OPENAI_COMPAT_MODEL (gemma4:e2b), ANTHROPIC_API_KEY, ANTHROPIC_MODEL, LLM_TIMEOUT_SECONDS (120 locally), optional LLM_REASONING_EFFORT (local only, default none); embeddings: EMBED_BASE (http://localhost:11434/v1), EMBED_KEY (ollama), EMBED_MODEL (embeddinggemma), EMBED_DIMENSIONS (768), optional EMBED_TIMEOUT_SECONDS (default 3; 15 locally)
-frontend/.env.local: VITE_API_BASE, VITE_USE_MOCKS
+Sign-in: PINPOINT_AUTH (on | off), PINPOINT_ALLOWED_ORIGINS (http://localhost:5173,http://127.0.0.1:5173), PINPOINT_COOKIE_SECURE, PINPOINT_ALLOW_REMOTE_SETUP
+frontend/.env.local: VITE_API_BASE, VITE_USE_MOCKS (mock mode signs in with any email and a 10+ character password)

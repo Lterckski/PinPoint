@@ -1,5 +1,5 @@
 // In-memory mock backend. Same shapes as the real API (src/lib/types.ts).
-import type { AskResponse, AskResult, CreateWorkspaceRequest, FileItem, FileText, FileType, Folder, HistoryDetail, HistoryItem, KnowledgeStats, Note, Workspace } from '../lib/types'
+import type { AccountDetails, AuthSession, AuthUser, AskResponse, AskResult, CreateWorkspaceRequest, FileItem, FileText, FileType, Folder, HistoryDetail, HistoryItem, KnowledgeStats, Note, Workspace } from '../lib/types'
 import * as data from './data'
 
 const state = {
@@ -314,4 +314,52 @@ export async function getFileText(ws: string, fileId: string): Promise<FileText>
 export async function pickFolder(): Promise<string | null> {
   await delay(500)
   return '/Users/maria/Documents/Reyes Client Files'
+}
+
+// Authentication. Mock mode has one demo account; any password of 10+ characters works,
+// so the sign-in screens can be tried without a backend. Nothing is stored.
+const MOCK_USER: AuthUser = { id: 'demo', name: 'Luther Dira', email: 'luther@reyeslaw.ph', role: 'owner' }
+let mockSignedIn = false
+
+export async function session(): Promise<AuthSession> {
+  await delay(120)
+  return { user: mockSignedIn ? structuredClone(MOCK_USER) : null, setup_required: false, auth_enabled: true }
+}
+
+export async function signIn(email: string, password: string): Promise<AuthSession> {
+  await delay(500)
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim()) || password.length < 10) {
+    throw new MockError("That email and password don't match.")
+  }
+  mockSignedIn = true
+  MOCK_USER.email = email.trim().toLowerCase()
+  return session()
+}
+
+export async function setup(name: string, email: string, password: string): Promise<AuthSession> {
+  MOCK_USER.name = name.trim()
+  return signIn(email, password)
+}
+
+export async function signOut(): Promise<void> {
+  await delay(150)
+  mockSignedIn = false
+}
+
+export async function account(): Promise<AccountDetails> {
+  await delay(150)
+  return { ...structuredClone(MOCK_USER), sessions: 1 }
+}
+
+export async function updateProfile(name: string): Promise<AuthUser> {
+  await delay(300)
+  MOCK_USER.name = name.trim()
+  return structuredClone(MOCK_USER)
+}
+
+export async function changePassword(current: string, next: string): Promise<AuthSession> {
+  await delay(400)
+  if (current.length < 10) throw new MockError('Your current password is incorrect.')
+  if (next.length < 10) throw new MockError('Use at least 10 characters.')
+  return session()
 }

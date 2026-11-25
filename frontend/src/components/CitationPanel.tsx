@@ -46,7 +46,7 @@ export function CitationPanel({ citation, total, onClose, onOpenDocument }: Cita
     <aside
       role="dialog"
       aria-label={`Source ${citation.number} of ${total}`}
-      className="fixed inset-y-0 right-0 z-30 flex w-[560px] flex-col gap-[18px] overflow-y-auto border-l border-border bg-surface p-6 shadow-panel"
+      className="animate-slide-in-right fixed inset-y-0 right-0 z-30 flex w-full flex-col gap-[18px] overflow-y-auto overscroll-contain border-l border-border bg-surface p-5 shadow-panel sm:inset-y-2 sm:right-2 sm:w-[560px] sm:rounded-panel sm:border sm:p-7"
     >
       <header className="flex items-center justify-between">
         <h2 className="text-h3 text-text">
@@ -57,14 +57,14 @@ export function CitationPanel({ citation, total, onClose, onOpenDocument }: Cita
           type="button"
           onClick={onClose}
           aria-label="Close source"
-          className="flex size-8 items-center justify-center rounded-control border border-border text-muted hover:text-text"
+          className="flex size-9 items-center justify-center rounded-control border border-border text-muted transition-colors hover:bg-surface-hover hover:text-text"
         >
           <X size={16} strokeWidth={1.75} />
         </button>
       </header>
 
       <div className="flex items-center gap-2">
-        <span className="flex size-[18px] shrink-0 items-center justify-center rounded-pill bg-accent-soft text-label text-accent">
+        <span className="flex h-[18px] min-w-[18px] shrink-0 items-center justify-center rounded-[5px] bg-accent px-1 text-[11px] font-semibold text-on-accent tabular-nums">
           {citation.number}
         </span>
         {citation.kind === 'note' ? (
@@ -73,7 +73,7 @@ export function CitationPanel({ citation, total, onClose, onOpenDocument }: Cita
           <FileText size={14} strokeWidth={1.75} className="shrink-0 text-muted" />
         )}
         <span className="min-w-0 truncate text-small text-text">
-          {citation.kind === 'note' ? 'Note saved in Memory' : `${citation.file_name} · Page ${citation.page}`}
+          {citation.kind === 'note' ? 'Note saved in Memory' : `${citation.file_name}, page ${citation.page}`}
         </span>
       </div>
 
@@ -83,13 +83,13 @@ export function CitationPanel({ citation, total, onClose, onOpenDocument }: Cita
         </p>
       ) : null}
 
-      <div className="overflow-hidden rounded-card">
+      <div className="overflow-hidden rounded-card border border-border">
         <CropImage citation={citation} size="panel" />
       </div>
 
-      <p className="text-eyebrow text-muted uppercase">{citation.kind === 'note' ? 'Note' : 'Relevant passage'}</p>
+      <h3 className="text-label text-muted">{citation.kind === 'note' ? 'Note' : 'Relevant passage'}</h3>
       <p className="font-serif text-doc whitespace-pre-line text-text">
-        <mark className="rounded-[3px] bg-highlight box-decoration-clone px-1 text-text">{excerpt}</mark>
+        <mark className="marker">{excerpt}</mark>
       </p>
 
       {hasMore && (
@@ -107,7 +107,7 @@ export function CitationPanel({ citation, total, onClose, onOpenDocument }: Cita
         </div>
       )}
 
-      <div className="flex gap-2">
+      <div className="sticky bottom-0 -mx-5 -mb-5 mt-auto flex flex-wrap gap-2 border-t border-border bg-surface px-5 py-4 sm:-mx-6 sm:-mb-6 sm:px-6">
         {onOpenDocument && citation.kind === 'file' && (
           <Button Icon={BookOpen} onClick={() => onOpenDocument(citation)}>
             Open document

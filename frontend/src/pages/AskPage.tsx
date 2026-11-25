@@ -1,4 +1,4 @@
-import { AlertTriangle, Clock, CornerDownRight, Loader2, Plus, Search, Sparkle, Upload } from 'lucide-react'
+import { Clock, CornerDownRight, FileUp, Loader2, Plus, Search, Upload } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { AnswerCard } from '../components/AnswerCard'
@@ -7,6 +7,7 @@ import { Button } from '../components/Button'
 import { CitationPanel } from '../components/CitationPanel'
 import { DocumentViewer, type ViewerFile } from '../components/DocumentViewer'
 import { SearchInput } from '../components/SearchInput'
+import { EmptyState, ErrorState, Skeleton } from '../components/States'
 import { api } from '../lib/api'
 import { dayLabel, fileTypeFromName, formatSeconds } from '../lib/format'
 import type { AskResponse, Citation, HistoryItem, Suggestion } from '../lib/types'
@@ -41,8 +42,9 @@ export function AskPage() {
 
   useEffect(() => {
     setActions(
-      <Button Icon={Upload} onClick={() => navigate(`/w/${id}/files`)}>
-        Upload files
+      <Button variant="secondary" Icon={Upload} onClick={() => navigate(`/w/${id}/files`)}>
+        <span className="hidden xs:inline">Upload files</span>
+        <span className="xs:hidden">Upload</span>
       </Button>,
     )
     return () => setActions(null)
@@ -146,32 +148,49 @@ export function AskPage() {
   const last = turns.length - 1
 
   return (
-    <div className="flex items-start gap-8">
-      <div className="flex min-w-0 flex-1 flex-col gap-3.5">
+    <div className="mx-auto flex w-full max-w-[760px] flex-col">
+      <div className="flex min-w-0 flex-col gap-4">
+        {turns.length === 0 && !loading && (
+          fileCount === 0 && workspace ? (
+            <EmptyState
+              Icon={FileUp}
+              title="Add files to start asking"
+              actions={
+                <Button Icon={FileUp} onClick={() => navigate(`/w/${id}/files`)}>
+                  Upload files
+                </Button>
+              }
+            >
+              {workspace.name} has no files yet. Upload PDFs, scans or photos, and you can ask about them here.
+            </EmptyState>
+          ) : (
+            <div className="animate-fade-in flex flex-col items-center gap-3 pt-6 pb-4 text-center sm:pt-16">
+              <h2 className="text-h1 text-text sm:text-[40px] sm:leading-[44px] sm:tracking-[-0.035em]">
+                What do you need to find?
+              </h2>
+              <p className="max-w-[46ch] text-body text-muted sm:text-[15px] sm:leading-6">
+                Ask about the {fileCount} file{fileCount === 1 ? '' : 's'} in {workspace?.name ?? 'this workspace'} in plain words. Every
+                answer shows exactly where it came from.
+              </p>
+            </div>
+          )
+        )}
         {turns.map((turn, i) => (
           <div key={`${turn.historyId ?? i}`} className="flex flex-col gap-3.5">
             {turn.question && (
-              <p className="flex items-start gap-2 text-body font-medium text-text">
-                {i > 0 && <CornerDownRight size={16} strokeWidth={1.75} className="mt-[3px] shrink-0 text-muted" />}
+              <p className="animate-rise-in max-w-[85%] self-end rounded-card rounded-br-[6px] border border-border bg-surface px-4.5 lg:border-transparent lg:bg-surface-muted py-3 text-answer font-medium text-text">
                 {turn.question}
               </p>
             )}
             {turn.error ? (
-              <div role="alert" className="flex items-start gap-3 rounded-card border border-border bg-danger-soft px-5 py-4">
-                <AlertTriangle size={18} strokeWidth={1.75} className="mt-0.5 shrink-0 text-danger" />
-                <div className="flex min-w-0 flex-1 flex-col gap-1">
-                  <p className="text-body font-medium text-text">Couldn't get an answer</p>
-                  <p className="text-small text-muted">{turn.error}</p>
-                </div>
-                {turn.question && (
-                  <Button variant="secondary" onClick={() => void ask(turn.question)}>
-                    Retry
-                  </Button>
-                )}
-              </div>
+              <ErrorState
+                title="Couldn't get an answer"
+                message={turn.error}
+                onRetry={turn.question ? () => void ask(turn.question) : undefined}
+              />
             ) : turn.response ? (
               <>
-                <p className="text-label text-muted">
+                <p className="tabular pl-1 text-label text-subtle">
                   Searched {turn.response.searched_files} file{turn.response.searched_files === 1 ? '' : 's'} in{' '}
                   {formatSeconds(turn.response.elapsed_ms)}
                 </p>
@@ -207,12 +226,12 @@ export function AskPage() {
         {loading && <LoadingCard fileCount={fileCount} />}
 
         {followingUp && turns.length > 0 && (
-          <div className="flex items-center justify-between gap-3 rounded-control bg-accent-soft px-3.5 py-2">
+          <div className="flex items-center justify-between gap-3 rounded-control bg-accent-soft py-1 pr-1 pl-4">
             <p className="flex min-w-0 items-center gap-2 text-small text-accent">
               <CornerDownRight size={14} strokeWidth={1.75} className="shrink-0" />
               <span className="truncate">Following up on: {turns[last].question}</span>
             </p>
-            <Button variant="ghost" Icon={Plus} onClick={newQuestion}>
+            <Button variant="ghost" size="sm" Icon={Plus} onClick={newQuestion}>
               New question
             </Button>
           </div>
@@ -227,12 +246,6 @@ export function AskPage() {
           placeholder={followingUp ? 'Ask a follow-up…' : undefined}
         />
 
-        {turns.length === 0 && !loading && (
-          <p className="text-small text-muted">
-            Ask anything about the files in {workspace?.name ?? 'this workspace'}. Every answer shows where it came from.
-          </p>
-        )}
-
         {turns.length > 0 && !loading && !followingUp && (
           <div>
             <Button variant="ghost" Icon={Plus} onClick={newQuestion}>
@@ -243,27 +256,27 @@ export function AskPage() {
         <div ref={bottomRef} />
       </div>
 
-      <aside className="flex w-[272px] shrink-0 flex-col gap-1" aria-label="Recent questions">
-        <h2 className="pb-2 text-h3 text-text">Recent questions</h2>
-        {recent.length === 0 ? (
-          <p className="px-2.5 text-small text-muted">Your questions will show up here.</p>
-        ) : (
-          recent.map((r) => (
-            <button
-              key={r.id}
-              type="button"
-              onClick={() => setParams({ h: r.id })}
-              className="flex w-full items-start gap-2.5 rounded-control p-2.5 text-left hover:bg-surface-muted"
-            >
-              <Clock size={16} strokeWidth={1.75} className="mt-0.5 shrink-0 text-muted" />
-              <span className="flex min-w-0 flex-col gap-0.5">
-                <span className="text-small text-text">{r.question}</span>
-                <span className="text-label text-muted">{dayLabel(r.created_at)}</span>
-              </span>
-            </button>
-          ))
-        )}
-      </aside>
+      {turns.length === 0 && !loading && recent.length > 0 && (
+        <section className="animate-fade-in mt-8 flex flex-col items-center gap-3" aria-labelledby="ask-recent">
+          <h2 id="ask-recent" className="text-label text-subtle">
+            Recent questions
+          </h2>
+          <div className="stagger flex flex-wrap justify-center gap-2">
+            {recent.slice(0, 6).map((r) => (
+              <button
+                key={r.id}
+                type="button"
+                onClick={() => setParams({ h: r.id })}
+                title={`Asked ${dayLabel(r.created_at)}`}
+                className="press lift flex max-w-full items-center gap-2 rounded-pill border border-border bg-surface px-4 py-2 text-small text-text transition-[border-color,background-color] hover:border-border-strong hover:bg-surface-muted"
+              >
+                <Clock size={14} strokeWidth={1.75} className="shrink-0 text-subtle" aria-hidden="true" />
+                <span className="truncate">{r.question}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
 
       {open && turns[open.turn]?.response && (
         <CitationPanel
@@ -282,21 +295,21 @@ export function AskPage() {
 // Figma 07 States (9:971), "Loading".
 function LoadingCard({ fileCount }: { fileCount: number }) {
   return (
-    <div className="flex flex-col gap-4 rounded-card border border-border bg-surface px-6 py-[22px]" aria-live="polite">
+    <div className="animate-fade-in flex flex-col gap-4 rounded-panel border border-border bg-surface px-5 py-5 shadow-subtle sm:px-6" aria-live="polite">
       <p className="flex items-center gap-2 text-body font-medium text-text">
-        <Loader2 size={16} strokeWidth={2} className="animate-spin text-accent" />
-        Searching {fileCount} file{fileCount === 1 ? '' : 's'}…
+        <Loader2 size={16} strokeWidth={2} className="animate-spin text-accent" aria-hidden="true" />
+        Reading {fileCount} file{fileCount === 1 ? '' : 's'} for the answer…
       </p>
       <div className="flex flex-col gap-2.5" aria-hidden="true">
-        <div className="h-2.5 w-4/5 animate-pulse rounded-pill bg-surface-muted" />
-        <div className="h-2.5 w-3/5 animate-pulse rounded-pill bg-surface-muted" />
-        <div className="h-2.5 w-2/5 animate-pulse rounded-pill bg-surface-muted" />
+        <Skeleton className="h-3 w-4/5 rounded-pill" />
+        <Skeleton className="h-3 w-3/5 rounded-pill" />
+        <Skeleton className="h-3 w-2/5 rounded-pill" />
       </div>
-      <div className="flex gap-3" aria-hidden="true">
+      <div className="grid gap-3 sm:grid-cols-2" aria-hidden="true">
         {[0, 1].map((i) => (
-          <div key={i} className="flex w-[264px] flex-col gap-3 rounded-card border border-border p-3">
-            <div className="h-[88px] animate-pulse rounded-control bg-surface-muted" />
-            <div className="h-2 w-1/2 animate-pulse rounded-pill bg-surface-muted" />
+          <div key={i} className={`flex-col gap-3 rounded-card border border-border p-3 ${i ? 'hidden sm:flex' : 'flex'}`}>
+            <Skeleton className="h-[88px]" />
+            <Skeleton className="h-2.5 w-1/2 rounded-pill" />
           </div>
         ))}
       </div>
@@ -329,12 +342,12 @@ function NotFoundCard({
   onRephrase,
 }: NotFoundCardProps) {
   return (
-    <div className="flex flex-col gap-3 rounded-card border border-border bg-surface px-6 py-[22px] shadow-subtle">
-      <p className="flex items-center gap-2 text-eyebrow text-muted uppercase">
-        <Search size={14} strokeWidth={1.75} />
+    <div className="animate-rise-in flex flex-col gap-3 rounded-panel border border-border bg-surface px-5 py-5 shadow-subtle sm:px-6">
+      <p className="flex items-center gap-2 text-small font-medium text-muted">
+        <Search size={14} strokeWidth={1.75} aria-hidden="true" />
         Not found in these files
       </p>
-      <p className="text-[16px] leading-[26px] text-text">
+      <p className="text-answer text-text">
         {reason || `None of the ${fileCount} files in ${workspaceName ?? 'this workspace'} answer this question.`}
       </p>
       {suggestion && (
@@ -342,15 +355,15 @@ function NotFoundCard({
           type="button"
           onClick={() => onSuggestion(suggestion.question)}
           title={suggestion.question}
-          className="flex items-center gap-2 self-start rounded-control bg-accent-soft px-3.5 py-2 text-left text-body font-medium text-accent hover:bg-accent hover:text-on-accent"
+          className="press flex items-center gap-2 self-start rounded-control bg-accent-soft px-4 py-2 text-left text-body font-medium text-accent transition-colors hover:bg-accent hover:text-on-accent"
         >
-          <Sparkle size={16} strokeWidth={1.75} className="shrink-0" />
+          <CornerDownRight size={16} strokeWidth={1.75} className="shrink-0" aria-hidden="true" />
           {suggestion.text}
         </button>
       )}
       {nearMatches.length > 0 && (
         <div className="flex flex-col gap-2 pt-1">
-          <p className="text-eyebrow text-muted uppercase">Closest passages</p>
+          <h3 className="text-label text-muted">Closest passages</h3>
           <div className="flex flex-wrap gap-3">
             {nearMatches.map((c) => (
               <CitationCard key={c.id} citation={c} onOpen={onOpenMatch} />
@@ -359,8 +372,8 @@ function NotFoundCard({
         </div>
       )}
       <p className="text-small text-muted">Try uploading the document that covers it, or rephrase your question.</p>
-      <div className="flex gap-1 pt-1">
-        <Button variant="secondary" onClick={onUpload}>
+      <div className="flex flex-wrap gap-2 pt-1">
+        <Button variant="secondary" Icon={FileUp} onClick={onUpload}>
           Upload more files
         </Button>
         <Button variant="ghost" onClick={onRephrase}>

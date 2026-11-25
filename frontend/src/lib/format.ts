@@ -31,7 +31,7 @@ export function fileMeta(file: FileItem): string {
   parts.push(formatBytes(file.size_bytes))
   if (file.status === 'queued') parts.push('Waiting to start')
   if (file.source === 'folder' && file.source_path) parts.push(file.source_path)
-  return parts.join(' · ')
+  return parts.join(', ')
 }
 
 /** "just now", "5 min ago", "3 h ago", then dayLabel(). */
@@ -55,5 +55,5 @@ export function fileTypeFromName(name: string): FileType {
 
 /** "Article VI · Section 21" from a citation path: the part before " — " of each heading. */
 export function breadcrumb(path?: string[]): string {
-  return (path ?? []).map((p) => p.split(' — ')[0]).join(' · ')
+  return (path ?? []).map((p) => p.split(' — ')[0]).join(', ')
 }

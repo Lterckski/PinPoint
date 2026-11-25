@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react'
+import { ArrowUp, Loader2, Search } from 'lucide-react'
 import { forwardRef, type FormEvent } from 'react'
 import { Button } from './Button'
 
@@ -22,19 +22,23 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(functi
   return (
     <form
       onSubmit={submit}
-      className="flex w-full items-center gap-3 rounded-card border border-border bg-surface py-2 pr-2 pl-[18px] shadow-subtle focus-within:border-accent"
+      role="search"
+      className="flex w-full items-center gap-3 rounded-pill border border-border-strong bg-surface py-2 pr-2 pl-5 shadow-card transition-[border-color,box-shadow] duration-150 focus-within:border-input focus-within:shadow-panel"
     >
-      <Search size={20} strokeWidth={1.75} className="shrink-0 text-muted" aria-hidden="true" />
+      <Search size={20} strokeWidth={1.75} className="shrink-0 text-subtle" aria-hidden="true" />
       <input
         ref={ref}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         aria-label="Question"
-        className="min-w-0 flex-1 bg-transparent text-body text-text placeholder:text-muted focus:outline-none"
+        enterKeyHint="search"
+        maxLength={1000}
+        className="h-11 min-w-0 flex-1 bg-transparent text-[15px] text-text placeholder:text-subtle focus:outline-none focus-visible:outline-none"
       />
-      <Button type="submit" disabled={!value.trim() || busy}>
-        Ask
+      <Button type="submit" disabled={!value.trim() || busy} aria-label="Ask" className="size-11 !px-0 sm:w-auto sm:!px-5">
+        {busy ? <Loader2 size={16} strokeWidth={2} className="animate-spin" aria-hidden="true" /> : <ArrowUp size={16} strokeWidth={2.25} className="sm:hidden" aria-hidden="true" />}
+        <span className="hidden sm:inline">Ask</span>
       </Button>
     </form>
   )

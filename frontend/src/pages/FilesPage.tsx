@@ -1,4 +1,4 @@
-import { AlertTriangle, ChevronDown, FileUp, FolderInput, FolderUp, Upload } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, ChevronDown, FileUp, FolderInput, FolderUp, Upload } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState, type DragEvent } from 'react'
 import { useParams } from 'react-router-dom'
 import { Button } from '../components/Button'
@@ -6,6 +6,7 @@ import { ConnectedFolders } from '../components/ConnectedFolders'
 import { ConnectFolderDialog } from '../components/ConnectFolderDialog'
 import { DocumentViewer, type ViewerFile } from '../components/DocumentViewer'
 import { FileRow } from '../components/FileRow'
+import { EmptyState, ErrorState, Skeleton } from '../components/States'
 import { api } from '../lib/api'
 import { ACCEPT, canPickDirectory, filterFolderInput, isSupported, pickDirectoryFiles } from '../lib/folders'
 import type { FileItem, Folder, KnowledgeStats } from '../lib/types'
@@ -29,6 +30,7 @@ export function FilesPage() {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [uploadMessage, setUploadMessage] = useState<string | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
+  const [lastDone, setLastDone] = useState<string | null>(null)
   const [dragging, setDragging] = useState(false)
   const fileInput = useRef<HTMLInputElement>(null)
   const folderInput = useRef<HTMLInputElement>(null)
@@ -107,7 +109,7 @@ export function FilesPage() {
     try {
       await api.deleteFile(id, file.id)
       setUploadError(null)
-      setUploadMessage(`Deleted ${file.name}.`)
+      setLastDone(`Deleted ${file.name}.`)
       await load()
     } catch (e) {
       setUploadError(e instanceof Error ? e.message : 'Delete failed.')
@@ -118,7 +120,7 @@ export function FilesPage() {
     try {
       await api.deleteFile(id, file.id)
       setUploadError(null)
-      setUploadMessage(`Cancelled ${file.name}.`)
+      setLastDone(`Cancelled ${file.name}.`)
       await load()
     } catch (e) {
       setUploadError(e instanceof Error ? e.message : 'Could not cancel the upload.')
@@ -145,6 +147,7 @@ export function FilesPage() {
           await api.uploadFiles(id, batch)
         }
         if (skipped) setUploadError(`Skipped ${skipped} unsupported file${skipped === 1 ? '' : 's'}.`)
+        setLastDone(`Added ${supported.length} file${supported.length === 1 ? '' : 's'}. PinPoint is reading ${supported.length === 1 ? 'it' : 'them'} now.`)
       } catch (e) {
         setUploadError(e instanceof Error ? e.message : 'Upload failed.')
       } finally {
@@ -214,63 +217,85 @@ export function FilesPage() {
         }}
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
-        className={`flex flex-col items-center gap-2.5 rounded-card border border-dashed py-[22px] ${
-          dragging ? 'border-accent bg-accent-soft' : 'border-border bg-surface'
+        className={`flex flex-col items-center gap-3 rounded-card border border-dashed px-4 py-7 text-center transition-colors duration-150 sm:flex-row sm:gap-4 sm:px-6 sm:py-5 sm:text-left ${
+          dragging ? 'border-accent bg-accent-soft' : 'border-border-strong bg-surface hover:bg-surface-muted'
         }`}
       >
-        <div className="flex size-11 items-center justify-center rounded-pill bg-accent-soft text-accent">
-          <Upload size={20} strokeWidth={1.75} />
+        <div className="flex size-11 shrink-0 items-center justify-center rounded-pill bg-accent-soft text-accent">
+          <Upload size={20} strokeWidth={1.75} aria-hidden="true" />
         </div>
-        {uploadMessage ? (
-          <p className="text-body font-medium text-text" aria-live="polite">
-            {uploadMessage}
-          </p>
-        ) : (
-          <p className="text-body font-medium text-text">
-            Drop files here, or{' '}
-            <button type="button" onClick={() => fileInput.current?.click()} className="text-accent hover:text-accent-hover">
-              browse
-            </button>
-          </p>
-        )}
-        <p className="text-small text-muted">Photos, scans, PDF, Word, Excel, and PowerPoint · Up to 50 MB each</p>
+        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+          {uploadMessage ? (
+            <p className="text-body font-medium text-text" aria-live="polite">
+              {uploadMessage}
+            </p>
+          ) : (
+            <p className="text-body font-medium text-text">
+              {dragging ? 'Drop to add these files' : (
+                <>
+                  Drag files here, or{' '}
+                  <button type="button" onClick={() => fileInput.current?.click()} className="rounded-[4px] text-accent underline decoration-accent-border underline-offset-2 hover:text-accent-hover">
+                    browse
+                  </button>
+                </>
+              )}
+            </p>
+          )}
+          <p className="text-small text-subtle">Scans, photos, PDF, Word, Excel, PowerPoint, CSV and text, up to 50 MB each</p>
+        </div>
       </div>
 
       {uploadError && (
-        <p role="alert" className="flex items-center gap-2 text-small text-danger">
-          <AlertTriangle size={14} strokeWidth={1.75} />
+        <p role="alert" className="flex items-start gap-2 rounded-box border border-danger/25 bg-danger-soft px-3 py-2 text-small text-danger">
+          <AlertTriangle size={16} strokeWidth={1.75} className="mt-0.5 shrink-0" aria-hidden="true" />
           {uploadError}
+        </p>
+      )}
+      {!uploadError && !uploadMessage && lastDone && (
+        <p role="status" className="flex items-center gap-2 text-small text-success">
+          <CheckCircle2 size={16} strokeWidth={1.75} aria-hidden="true" />
+          {lastDone}
         </p>
       )}
 
       {loadError && !files ? (
-        <div role="alert" className="flex items-center gap-3 rounded-card border border-border bg-danger-soft px-5 py-4">
-          <AlertTriangle size={18} strokeWidth={1.75} className="shrink-0 text-danger" />
-          <p className="flex-1 text-small text-text">{loadError}</p>
-          <Button variant="secondary" onClick={() => void load()}>
-            Retry
-          </Button>
-        </div>
+        <ErrorState title="Couldn't load files" message={loadError} onRetry={() => void load()} />
       ) : files === null ? (
-        <div className="flex flex-col gap-1.5" aria-hidden="true">
+        <div className="flex flex-col divide-y divide-border overflow-hidden rounded-card border border-border bg-surface" aria-hidden="true">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="h-[70px] animate-pulse rounded-control border border-border bg-surface" />
+            <div key={i} className="flex items-center gap-3.5 px-4 py-3.5">
+              <Skeleton className="size-9" />
+              <div className="flex flex-1 flex-col gap-2">
+                <Skeleton className="h-3 w-1/2" />
+                <Skeleton className="h-2.5 w-1/4" />
+              </div>
+            </div>
           ))}
         </div>
       ) : (
         <>
         <ConnectedFolders folders={folders} onRescan={(f) => void rescan(f)} onDisconnect={(f) => void disconnect(f)} />
-        <section className="flex flex-col gap-5">
+        <section className="flex flex-col gap-3" aria-labelledby="files-heading">
           <div className="flex items-center justify-between">
-            <h2 className="text-body font-semibold text-text">
+            <h2 id="files-heading" className="tabular text-h3 text-text">
               {files.length} file{files.length === 1 ? '' : 's'}
             </h2>
-            <span className="text-label text-muted">Sorted by: Recently added</span>
+            {files.length > 1 && <span className="text-label text-subtle">Newest first</span>}
           </div>
           {files.length === 0 ? (
-            <p className="text-small text-muted">No files yet. Upload PDFs, scans, photos, or spreadsheets to start asking questions.</p>
+            <EmptyState
+              Icon={FileUp}
+              title="No files yet"
+              actions={
+                <Button Icon={FileUp} onClick={() => fileInput.current?.click()}>
+                  Upload files
+                </Button>
+              }
+            >
+              Add this client's PDFs, scans, photos or spreadsheets. PinPoint reads them here, and then you can ask questions.
+            </EmptyState>
           ) : (
-            <div className="flex flex-col gap-1.5">
+            <div className="stagger flex flex-col divide-y divide-border overflow-hidden rounded-card border border-border bg-surface shadow-subtle">
               {files.map((file) => (
                 <FileRow
                   key={file.id}
@@ -298,6 +323,7 @@ function AddFilesMenu({ onFiles, onFolder, onConnect }: { onFiles: () => void; o
 
   useEffect(() => {
     if (!open) return
+    ref.current?.querySelector<HTMLElement>('[role="menuitem"]')?.focus()
     const close = (e: MouseEvent | KeyboardEvent) => {
       if (e instanceof KeyboardEvent ? e.key === 'Escape' : !ref.current?.contains(e.target as Node)) setOpen(false)
     }
@@ -316,14 +342,14 @@ function AddFilesMenu({ onFiles, onFolder, onConnect }: { onFiles: () => void; o
 
   return (
     <div ref={ref} className="relative">
-      <Button aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
+      <Button Icon={FileUp} aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
         Add files
-        <ChevronDown size={16} strokeWidth={1.75} />
+        <ChevronDown size={16} strokeWidth={1.75} className={`-mr-1 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
       </Button>
       {open && (
         <div
           role="menu"
-          className="absolute right-0 z-20 mt-1.5 flex w-56 flex-col rounded-control border border-border bg-surface p-1 shadow-panel"
+          className="animate-rise-in absolute right-0 z-20 mt-1.5 flex w-60 flex-col rounded-card border border-border bg-surface p-1 shadow-panel"
         >
           <MenuItem Icon={FileUp} label="Upload files" onClick={choose(onFiles)} />
           <MenuItem Icon={FolderUp} label="Upload a folder" onClick={choose(onFolder)} />
@@ -340,7 +366,7 @@ function MenuItem({ Icon, label, onClick }: { Icon: typeof FileUp; label: string
       type="button"
       role="menuitem"
       onClick={onClick}
-      className="flex items-center gap-2.5 rounded-[6px] px-2.5 py-2 text-left text-body text-text hover:bg-surface-muted"
+      className="flex h-10 items-center gap-2.5 rounded-box px-3 text-left text-body text-text hover:bg-surface-hover focus-visible:bg-surface-hover"
     >
       <Icon size={16} strokeWidth={1.75} className="text-muted" />
       {label}
@@ -348,20 +374,26 @@ function MenuItem({ Icon, label, onClick }: { Icon: typeof FileUp; label: string
   )
 }
 
-/** "6 files · 41 pages · 312 passages indexed · 2 notes · Updated 2 min ago" (GET /knowledge). */
+/** The workspace's index at a glance, as a row of figures (GET /knowledge). */
 function KnowledgeStrip({ stats }: { stats: KnowledgeStats }) {
-  const plural = (n: number, word: string) => `${n.toLocaleString()} ${word}${n === 1 ? '' : 's'}`
-  const parts = [
-    plural(stats.files, 'file'),
-    plural(stats.pages, 'page'),
-    `${plural(stats.passages, 'passage')} indexed`,
-    plural(stats.notes, 'note'),
+  const figures: [number, string][] = [
+    [stats.files, stats.files === 1 ? 'File' : 'Files'],
+    [stats.pages, stats.pages === 1 ? 'Page' : 'Pages'],
+    [stats.passages, 'Passages indexed'],
+    [stats.notes, stats.notes === 1 ? 'Note' : 'Notes'],
   ]
-  if (stats.folders > 0) parts.push(plural(stats.folders, 'connected folder'))
-  if (stats.last_indexed_at) parts.push(`Updated ${timeAgo(stats.last_indexed_at)}`)
+  if (stats.folders > 0) figures.push([stats.folders, stats.folders === 1 ? 'Connected folder' : 'Connected folders'])
   return (
-    <p className="-mt-1 text-small text-muted" aria-label="Knowledge stats">
-      {parts.join(' · ')}
-    </p>
+    <div className="flex flex-col gap-2">
+      <dl className="stagger grid grid-cols-2 gap-2 sm:flex sm:gap-3" aria-label="Knowledge stats">
+        {figures.map(([n, label]) => (
+          <div key={label} className="flex flex-1 flex-col gap-0.5 rounded-card bg-surface-muted px-5 py-4">
+            <dt className="order-2 text-label text-subtle">{label}</dt>
+            <dd className="tabular order-1 text-[24px] leading-8 font-semibold tracking-[-0.02em] text-text">{n.toLocaleString()}</dd>
+          </div>
+        ))}
+      </dl>
+      {stats.last_indexed_at && <p className="text-small text-subtle">Index updated {timeAgo(stats.last_indexed_at)}</p>}
+    </div>
   )
 }

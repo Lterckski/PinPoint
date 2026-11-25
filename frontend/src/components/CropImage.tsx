@@ -9,7 +9,7 @@ type CropImageProps = {
 }
 
 // The proof snapshot: the real crop framed on --surface-muted with a soft --highlight edge.
-// Falls back to the extracted text (Instrument Serif, highlighted) when there is no image.
+// Falls back to the extracted text (document serif, highlighted) when there is no image.
 export function CropImage({ citation, size = 'card' }: CropImageProps) {
   const [failed, setFailed] = useState(false)
   const [landscape, setLandscape] = useState(true)
